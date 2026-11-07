@@ -35,9 +35,19 @@ Una aplicación web educativa e interactiva diseñada especialmente para **Crist
   > *"¡Miau! ¡Eres increíble, Cristal! Vamos al siguiente nivel"*
   Se lanzan fuegos artificiales de confeti y se desbloquea el **Nivel 2**.
 
-### 3. Nivel 2: "Palabras Mágicas" (Desbloqueable)
-- Cristal completa palabras divertidas (GATO, LUNA, SOL, MIAU, ESTRELLA) colocando la vocal faltante.
-- Al terminar, Cristal recibe su **Diploma de Súper Lectora Mágica**.
+### 3. Nivel 2: "Alimenta al Minino" (Desbloqueable)
+- Al entrar al nivel, la gatita guía dice en audio:
+  > *"¡Cristal, los gatitos tienen hambre! ¿Me ayudas a encontrar el plato con la letra correcta?"*
+- El gatito pide una letra en un cartel con pistas fonéticas amigables.
+- Hay 3 platos de comida con letras diferentes (galletas de pececito, estrellitas, lechita).
+- Al hacer clic en el plato correcto, la gatita dice con entusiasmo en audio:
+  > *"¡Qué rico! ¡Gracias Cristal!"*
+- Lista fija de 5 letras esenciales: **M**, **P**, **S**, **L**, **T**.
+- Al completar las 5 letras alimentadas, se reproduce la fanfarria de victoria y se desbloquea el **Nivel 3**.
+
+### 4. Nivel 3: "Palabras Mágicas" (Desbloqueable)
+- Cristal completa palabras mágicas (GATO, LUNA, SOL, MIAU, ESTRELLA) colocando la vocal faltante.
+- Al terminar, Cristal recibe su **Gran Diploma de Lectora Mágica**.
 
 ---
 

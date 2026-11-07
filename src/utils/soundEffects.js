@@ -163,3 +163,30 @@ export function playCuteMeow() {
   osc.start(now);
   osc.stop(now + 0.38);
 }
+
+/**
+ * Cute eating / crunch sound when the kitten eats the treat bowl
+ */
+export function playCuteMunch() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  [0, 0.1, 0.22].forEach((offset) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(420 + Math.random() * 80, now + offset);
+    osc.frequency.exponentialRampToValueAtTime(180, now + offset + 0.08);
+
+    gain.gain.setValueAtTime(0.2, now + offset);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.08);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now + offset);
+    osc.stop(now + offset + 0.08);
+  });
+}

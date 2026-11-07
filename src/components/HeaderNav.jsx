@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { kittenVoice } from '../utils/speech';
-import { playBellChime, playCuteMeow } from '../utils/soundEffects';
-import { Sparkles, Home, Volume2, Lock, Unlock, Settings, HelpCircle, Heart } from 'lucide-react';
+import { playCuteMeow, playSoftBounce } from '../utils/soundEffects';
+import { Sparkles, Home, Volume2, Lock, Unlock, Settings, Heart } from 'lucide-react';
 
 export default function HeaderNav({ 
   currentScreen, 
   onNavigate, 
   level2Unlocked,
-  fontFamily,
-  setFontFamily
+  level3Unlocked,
 }) {
   const [showSettings, setShowSettings] = useState(false);
   const [pitch, setPitch] = useState(1.55);
@@ -32,7 +31,7 @@ export default function HeaderNav({
   };
 
   return (
-    <header className="w-full bg-white/70 backdrop-blur-md border-b border-pink-200/80 sticky top-0 z-40 px-3 sm:px-6 py-2.5 shadow-sm">
+    <header className="w-full bg-white/75 backdrop-blur-md border-b border-pink-200/80 sticky top-0 z-40 px-3 sm:px-6 py-2.5 shadow-sm">
       <div className="max-w-5xl mx-auto flex items-center justify-between gap-2">
         {/* Brand / Logo */}
         <div 
@@ -48,7 +47,7 @@ export default function HeaderNav({
               <span>Gatitos Mágicos</span>
               <Sparkles className="w-4 h-4 text-amber-400" />
             </div>
-            <p className="text-xs font-semibold text-purple-700 flex items-center gap-1">
+            <p className="text-xs font-bold text-purple-700 flex items-center gap-1">
               <span>Para Cristal</span>
               <Heart className="w-3 h-3 fill-pink-500 text-pink-500" />
             </p>
@@ -56,47 +55,51 @@ export default function HeaderNav({
         </div>
 
         {/* Level Navigation Pills */}
-        <nav className="flex items-center gap-1.5 sm:gap-2">
+        <nav className="flex items-center gap-1 sm:gap-2">
+          {/* Home */}
           <button
             onClick={() => onNavigate('home')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               currentScreen === 'home'
                 ? 'bg-pink-500 text-white shadow-sm'
                 : 'text-slate-600 hover:bg-pink-50'
             }`}
           >
-            <Home className="w-4 h-4" />
+            <Home className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">Inicio</span>
           </button>
 
+          {/* Level 1: Vocales */}
           <button
             onClick={() => onNavigate('level1')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               currentScreen === 'level1'
                 ? 'bg-pink-500 text-white shadow-sm'
                 : 'text-slate-600 hover:bg-pink-50'
             }`}
+            title="Nivel 1: Atrapa la Vocal"
           >
             <span>Nivel 1</span>
-            <span className="hidden md:inline font-normal">(Vocales)</span>
           </button>
 
+          {/* Level 2: Alimenta al Minino */}
           <button
             onClick={() => {
               if (level2Unlocked) {
                 onNavigate('level2');
               } else {
+                playSoftBounce();
                 kittenVoice.speak('Cristal, primero atrapa 5 vocales en el Nivel 1 para desbloquear el Nivel 2.');
               }
             }}
-            className={`flex items-center gap-1 sm:gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               currentScreen === 'level2'
                 ? 'bg-purple-600 text-white shadow-sm'
                 : level2Unlocked
                 ? 'text-purple-700 bg-purple-50 hover:bg-purple-100'
                 : 'text-slate-400 bg-slate-100 cursor-not-allowed opacity-80'
             }`}
-            title={level2Unlocked ? 'Ir al Nivel 2' : 'Completa el Nivel 1 para desbloquear'}
+            title={level2Unlocked ? 'Ir al Nivel 2: Alimenta al Minino' : 'Completa el Nivel 1 para desbloquear'}
           >
             {level2Unlocked ? (
               <Unlock className="w-3.5 h-3.5 text-purple-600" />
@@ -106,10 +109,37 @@ export default function HeaderNav({
             <span>Nivel 2</span>
           </button>
 
-          {/* Quick Voice & Audio Settings button */}
+          {/* Level 3: Palabras Mágicas */}
+          <button
+            onClick={() => {
+              if (level3Unlocked) {
+                onNavigate('level3');
+              } else {
+                playSoftBounce();
+                kittenVoice.speak('Cristal, primero alimenta a los gatitos en el Nivel 2 para desbloquear el Nivel 3.');
+              }
+            }}
+            className={`flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              currentScreen === 'level3'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : level3Unlocked
+                ? 'text-indigo-700 bg-indigo-50 hover:bg-indigo-100'
+                : 'text-slate-400 bg-slate-100 cursor-not-allowed opacity-80'
+            }`}
+            title={level3Unlocked ? 'Ir al Nivel 3: Palabras Mágicas' : 'Completa el Nivel 2 para desbloquear'}
+          >
+            {level3Unlocked ? (
+              <Unlock className="w-3.5 h-3.5 text-indigo-600" />
+            ) : (
+              <Lock className="w-3.5 h-3.5 text-slate-400" />
+            )}
+            <span>Nivel 3</span>
+          </button>
+
+          {/* Voice & Audio Settings button */}
           <button
             onClick={() => setShowSettings(!showSettings)}
-            className="p-2 rounded-xl text-slate-600 hover:bg-pink-50 hover:text-pink-600 transition-colors"
+            className="p-1.5 sm:p-2 rounded-xl text-slate-600 hover:bg-pink-50 hover:text-pink-600 transition-colors"
             title="Ajustes de Voz y Sonido"
           >
             <Settings className="w-4 h-4" />
@@ -117,13 +147,13 @@ export default function HeaderNav({
         </nav>
       </div>
 
-      {/* Voice Settings Dropdown / Panel */}
+      {/* Voice Settings Dropdown */}
       {showSettings && (
         <div className="absolute top-14 right-3 sm:right-6 bg-white rounded-2xl p-4 border-2 border-pink-200 shadow-xl w-72 sm:w-80 z-50 text-slate-700">
           <div className="flex items-center justify-between pb-2 border-b border-pink-100 mb-3">
             <span className="font-extrabold text-sm text-pink-700 flex items-center gap-1.5">
               <Volume2 className="w-4 h-4 text-pink-500" />
-              Ajustes de Voz Mágica
+              Ajustes de Voz de la Gatita
             </span>
             <button
               onClick={() => setShowSettings(false)}
