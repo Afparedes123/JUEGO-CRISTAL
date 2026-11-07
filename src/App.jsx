@@ -3,13 +3,15 @@ import HeaderNav from './components/HeaderNav';
 import HomeScreen from './components/HomeScreen';
 import Level1Vowels from './components/Level1Vowels';
 import Level2FeedKitty from './components/Level2FeedKitty';
-import Level3MagicWords from './components/Level3MagicWords';
+import Level3CloudJumps from './components/Level3CloudJumps';
+import Level4MagicWords from './components/Level4MagicWords';
 import { Sparkles, Heart } from 'lucide-react';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
   const [level2Unlocked, setLevel2Unlocked] = useState(false);
   const [level3Unlocked, setLevel3Unlocked] = useState(false);
+  const [level4Unlocked, setLevel4Unlocked] = useState(false);
 
   const handleStartGame = () => {
     setCurrentScreen('level1');
@@ -33,6 +35,15 @@ function App() {
     setCurrentScreen('level3');
   };
 
+  const handleLevel3Complete = () => {
+    setLevel4Unlocked(true);
+  };
+
+  const handleGoToLevel4 = () => {
+    setLevel4Unlocked(true);
+    setCurrentScreen('level4');
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-purple-100/70 via-pink-50/50 to-blue-50/70 text-slate-800">
       {/* Top Navigation Bar */}
@@ -41,6 +52,7 @@ function App() {
         onNavigate={(screen) => setCurrentScreen(screen)}
         level2Unlocked={level2Unlocked}
         level3Unlocked={level3Unlocked}
+        level4Unlocked={level4Unlocked}
       />
 
       {/* Main Content Area */}
@@ -64,8 +76,15 @@ function App() {
         )}
 
         {currentScreen === 'level3' && (
-          <Level3MagicWords
-            onBackToLevel2={() => setCurrentScreen('level2')}
+          <Level3CloudJumps
+            onCompleteLevel={handleLevel3Complete}
+            onGoToLevel4={handleGoToLevel4}
+          />
+        )}
+
+        {currentScreen === 'level4' && (
+          <Level4MagicWords
+            onBackToLevel3={() => setCurrentScreen('level3')}
           />
         )}
       </main>

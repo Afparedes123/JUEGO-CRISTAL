@@ -190,3 +190,30 @@ export function playCuteMunch() {
     osc.stop(now + offset + 0.08);
   });
 }
+
+/**
+ * Play a bouncy spring jump sound when the kitten jumps on the cloud
+ */
+export function playCloudJump() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(220, now);
+  osc.exponentialRampToValueAtTime(680, now + 0.22);
+  osc.exponentialRampToValueAtTime(520, now + 0.35);
+
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.3, now + 0.03);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.38);
+}

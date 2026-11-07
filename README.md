@@ -45,9 +45,20 @@ Una aplicación web educativa e interactiva diseñada especialmente para **Crist
 - Lista fija de 5 letras esenciales: **M**, **P**, **S**, **L**, **T**.
 - Al completar las 5 letras alimentadas, se reproduce la fanfarria de victoria y se desbloquea el **Nivel 3**.
 
-### 4. Nivel 3: "Palabras Mágicas" (Desbloqueable)
-- Cristal completa palabras mágicas (GATO, LUNA, SOL, MIAU, ESTRELLA) colocando la vocal faltante.
-- Al terminar, Cristal recibe su **Gran Diploma de Lectora Mágica**.
+### 4. Nivel 3: "Saltos en las Nubes" (Desbloqueable)
+- Al entrar al nivel, la gatita guía dice en audio:
+  > *"Cristal, mira las nubes. Si las juntamos, ¡hacemos magia! Vamos a formar sílabas"*
+- Se muestran dos nubes separadas (una consonante y una vocal) y un botón interactivo **"¡Juntar!"**.
+- Al presionar el botón, las nubes se fusionan en una gran nube brillante mientras la gatita salta sobre ella y lee la sílaba completa en voz alta:
+  > *"¡MA!"*
+- Combinaciones fijas: **M+A**, **P+E**, **S+I**, **L+O**, **T+U**.
+- Al completar todas las combinaciones, la gatita felicita a Cristal:
+  > *"¡Qué inteligente eres, Cristal! Ya casi llegamos a la gran fiesta"*
+  y se desbloquea el **Nivel 4**.
+
+### 5. Nivel 4: "La Gran Fiesta de los Gatitos" (Desbloqueable)
+- Celebración de lectura donde Cristal completa palabras mágicas (GATO, LUNA, MIAU, SOL, FIESTA).
+- Al concluir, Cristal recibe la **Gran Corona de Lectura de Cristal**.
 
 ---
 
