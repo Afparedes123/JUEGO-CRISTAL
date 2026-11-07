@@ -162,10 +162,7 @@ export default function Level4PartyBoxes({ onRestartAll }) {
       const praiseText = `¡${currentItem.spokenWord}! ¡Muy bien, Cristal!`;
       setDialogue(praiseText);
 
-      kittenVoice.speak(praiseText, {
-        pitch: 1.6, // Extra joyful
-        rate: 0.92,
-      });
+      kittenVoice.speak(praiseText);
 
       if (!completedWords.includes(currentItem.word)) {
         setCompletedWords((prev) => [...prev, currentItem.word]);
@@ -214,10 +211,7 @@ export default function Level4PartyBoxes({ onRestartAll }) {
         'No pasa nada, Cristal, ¡vamos a intentarlo otra vez!';
       setDialogue(comfortingText);
 
-      kittenVoice.speak(comfortingText, {
-        pitch: 1.5,
-        rate: 0.9,
-      });
+      kittenVoice.speak(comfortingText);
 
       // Gently return the boxes to the bottom
       setTimeout(() => {

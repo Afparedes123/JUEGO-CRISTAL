@@ -129,9 +129,7 @@ export default function Level2FeedKitty({ onCompleteLevel, onGoToLevel3 }) {
       const thankYouText = '¡Qué rico! ¡Gracias Cristal!';
       setDialogue(thankYouText);
 
-      kittenVoice.speak(thankYouText, {
-        pitch: 1.6, // extra happy & cute pitch!
-      });
+      kittenVoice.speak(thankYouText);
 
       const nextStep = currentStep + 1;
 

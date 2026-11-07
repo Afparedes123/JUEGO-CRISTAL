@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { kittenVoice } from '../utils/speech';
 import { playCuteMeow, playSoftBounce } from '../utils/soundEffects';
-import { Sparkles, Home, Volume2, Lock, Unlock, Settings, Heart } from 'lucide-react';
+import { Sparkles, Home, Volume2, Lock, Unlock, Settings, Heart, Check } from 'lucide-react';
 
 export default function HeaderNav({ 
   currentScreen, 
@@ -11,12 +11,36 @@ export default function HeaderNav({
   level4Unlocked
 }) {
   const [showSettings, setShowSettings] = useState(false);
-  const [pitch, setPitch] = useState(1.55);
-  const [rate, setRate] = useState(0.93);
+  const [pitch, setPitch] = useState(1.0); // Tono 1.0 natural humano (no distorsiona)
+  const [rate, setRate] = useState(0.98);  // Ritmo fluido
+  const [availableVoices, setAvailableVoices] = useState([]);
+  const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
+
+  useEffect(() => {
+    const updateVoices = () => {
+      const latinVoices = kittenVoice.getAvailableLatinVoices();
+      setAvailableVoices(latinVoices);
+      if (kittenVoice.selectedVoice) {
+        setSelectedVoiceURI(kittenVoice.selectedVoice.voiceURI || kittenVoice.selectedVoice.name);
+      }
+    };
+
+    updateVoices();
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = updateVoices;
+    }
+  }, []);
 
   const handleTestVoice = () => {
     playCuteMeow();
-    kittenVoice.speak('¡Hola Cristal! Esta es mi voz de gatita mágica. ¡Miau!');
+    kittenVoice.speak('¡Hola Cristal! Soy tu amiga gatita. ¡Vamos a leer juntas con mucho cariño!');
+  };
+
+  const handleVoiceSelect = (e) => {
+    const uri = e.target.value;
+    setSelectedVoiceURI(uri);
+    kittenVoice.setVoiceByURI(uri);
+    kittenVoice.speak('¡Hola Cristal! Esta es mi nueva voz. ¿Te gusta cómo suena?');
   };
 
   const handlePitchChange = (e) => {
@@ -29,6 +53,19 @@ export default function HeaderNav({
     const val = parseFloat(e.target.value);
     setRate(val);
     kittenVoice.setRate(val);
+  };
+
+  const getCountryFlag = (lang, name) => {
+    const str = `${lang} ${name}`.toLowerCase();
+    if (str.includes('mx') || str.includes('mexic')) return '🇲🇽 México';
+    if (str.includes('co') || str.includes('colomb')) return '🇨🇴 Colombia';
+    if (str.includes('us') || str.includes('united states') || str.includes('estados unidos')) return '🇺🇸 Latino';
+    if (str.includes('ar') || str.includes('argent')) return '🇦🇷 Argentina';
+    if (str.includes('cl') || str.includes('chile')) return '🇨🇱 Chile';
+    if (str.includes('pe') || str.includes('peru')) return '🇵🇪 Perú';
+    if (str.includes('419')) return '🌎 Latinoamérica';
+    if (str.includes('es') || str.includes('spain')) return '🇪🇸 España';
+    return '🌎 Español';
   };
 
   return (
@@ -168,7 +205,7 @@ export default function HeaderNav({
           <button
             onClick={() => setShowSettings(!showSettings)}
             className="p-1.5 rounded-xl text-slate-600 hover:bg-pink-50 hover:text-pink-600 transition-colors"
-            title="Ajustes de Voz"
+            title="Ajustes de Voz Latina"
           >
             <Settings className="w-4 h-4" />
           </button>
@@ -177,11 +214,11 @@ export default function HeaderNav({
 
       {/* Voice Settings Dropdown */}
       {showSettings && (
-        <div className="absolute top-14 right-3 sm:right-6 bg-white rounded-2xl p-4 border-2 border-pink-200 shadow-xl w-72 sm:w-80 z-50 text-slate-700">
+        <div className="absolute top-14 right-3 sm:right-6 bg-white rounded-3xl p-5 border-2 border-pink-200 shadow-2xl w-80 sm:w-96 z-50 text-slate-700">
           <div className="flex items-center justify-between pb-2 border-b border-pink-100 mb-3">
             <span className="font-extrabold text-sm text-pink-700 flex items-center gap-1.5">
               <Volume2 className="w-4 h-4 text-pink-500" />
-              Ajustes de Voz de la Gatita
+              Voz de Mujer Latina (Fluida y Humana)
             </span>
             <button
               onClick={() => setShowSettings(false)}
@@ -191,45 +228,76 @@ export default function HeaderNav({
             </button>
           </div>
 
-          <div className="space-y-3 text-xs font-bold">
+          <div className="space-y-4 text-xs font-bold">
+            {/* Latin Voice Selector */}
             <div>
-              <div className="flex justify-between mb-1">
-                <span>Tono de voz (Agudo/Gatita):</span>
-                <span className="text-pink-600">{pitch.toFixed(2)}x</span>
-              </div>
-              <input
-                type="range"
-                min="1.0"
-                max="1.9"
-                step="0.05"
-                value={pitch}
-                onChange={handlePitchChange}
-                className="w-full accent-pink-500 cursor-pointer"
-              />
+              <label className="block text-slate-700 font-extrabold mb-1">
+                Selecciona la voz para Cristal:
+              </label>
+              <select
+                value={selectedVoiceURI}
+                onChange={handleVoiceSelect}
+                className="w-full bg-pink-50 border-2 border-pink-200 rounded-xl p-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-pink-500"
+              >
+                {availableVoices.length > 0 ? (
+                  availableVoices.map((v) => {
+                    const flag = getCountryFlag(v.lang, v.name);
+                    const isNeural = v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Google');
+                    return (
+                      <option key={v.voiceURI || v.name} value={v.voiceURI || v.name}>
+                        {flag} - {v.name.replace(/Microsoft|Google|Apple/g, '').trim()} {isNeural ? '✨(Natural)' : ''}
+                      </option>
+                    );
+                  })
+                ) : (
+                  <option value="">Cargando voces latinas...</option>
+                )}
+              </select>
+              <p className="text-[10px] text-pink-600 mt-1 font-medium">
+                💡 Consejo: Las voces marcadas con ✨(Natural) suenan 100% humanas y fluidas.
+              </p>
             </div>
 
+            {/* Natural Speed */}
             <div>
               <div className="flex justify-between mb-1">
-                <span>Velocidad de lectura:</span>
-                <span className="text-pink-600">{rate.toFixed(2)}x</span>
+                <span>Velocidad de habla:</span>
+                <span className="text-pink-600 font-mono">{rate.toFixed(2)}x</span>
               </div>
               <input
                 type="range"
-                min="0.75"
-                max="1.2"
-                step="0.05"
+                min="0.8"
+                max="1.15"
+                step="0.02"
                 value={rate}
                 onChange={handleRateChange}
                 className="w-full accent-pink-500 cursor-pointer"
               />
             </div>
 
+            {/* Natural Tone */}
+            <div>
+              <div className="flex justify-between mb-1">
+                <span>Tono natural:</span>
+                <span className="text-pink-600 font-mono">{pitch.toFixed(2)}x (Humano)</span>
+              </div>
+              <input
+                type="range"
+                min="0.9"
+                max="1.1"
+                step="0.02"
+                value={pitch}
+                onChange={handlePitchChange}
+                className="w-full accent-pink-500 cursor-pointer"
+              />
+            </div>
+
             <button
               onClick={handleTestVoice}
-              className="w-full bg-pink-100 hover:bg-pink-200 text-pink-700 font-extrabold py-2 rounded-xl flex items-center justify-center gap-1.5 transition-colors"
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-extrabold py-2.5 rounded-xl flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all"
             >
               <Volume2 className="w-4 h-4" />
-              <span>Probar voz de la gatita</span>
+              <span>Probar voz latina ahora</span>
             </button>
           </div>
         </div>

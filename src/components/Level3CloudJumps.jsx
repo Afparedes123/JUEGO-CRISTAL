@@ -107,10 +107,7 @@ export default function Level3CloudJumps({ onCompleteLevel, onGoToLevel4 }) {
       const syllableText = `¡${currentPair.syllable}!`;
       setDialogue(`¡${currentPair.syllable}! ✨ Formaste la sílaba ${currentPair.syllable} (${currentPair.soundHint})`);
 
-      kittenVoice.speak(syllableText, {
-        pitch: 1.6, // High, cheerful child/kitten tone
-        rate: 0.9,
-      });
+      kittenVoice.speak(syllableText);
 
       if (!completedSyllables.includes(currentPair.syllable)) {
         setCompletedSyllables((prev) => [...prev, currentPair.syllable]);
