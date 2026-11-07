@@ -4,7 +4,7 @@ import HomeScreen from './components/HomeScreen';
 import Level1Vowels from './components/Level1Vowels';
 import Level2FeedKitty from './components/Level2FeedKitty';
 import Level3CloudJumps from './components/Level3CloudJumps';
-import Level4MagicWords from './components/Level4MagicWords';
+import Level4PartyBoxes from './components/Level4PartyBoxes';
 import { Sparkles, Heart } from 'lucide-react';
 
 function App() {
@@ -83,8 +83,8 @@ function App() {
         )}
 
         {currentScreen === 'level4' && (
-          <Level4MagicWords
-            onBackToLevel3={() => setCurrentScreen('level3')}
+          <Level4PartyBoxes
+            onRestartAll={() => setCurrentScreen('home')}
           />
         )}
       </main>

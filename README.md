@@ -56,9 +56,20 @@ Una aplicación web educativa e interactiva diseñada especialmente para **Crist
   > *"¡Qué inteligente eres, Cristal! Ya casi llegamos a la gran fiesta"*
   y se desbloquea el **Nivel 4**.
 
-### 5. Nivel 4: "La Gran Fiesta de los Gatitos" (Desbloqueable)
-- Celebración de lectura donde Cristal completa palabras mágicas (GATO, LUNA, MIAU, SOL, FIESTA).
-- Al concluir, Cristal recibe la **Gran Corona de Lectura de Cristal**.
+### 5. Nivel 4: "Fiesta Gatuna - Ordena las cajas" (Desbloqueable)
+- Al entrar al nivel, la gatita guía dice en audio:
+  > *"¡Cristal, es hora de la fiesta gatuna! Ayúdame a ordenar las cajas para descubrir las palabras mágicas"*
+- Muestra un emoji representativo y cajas de regalo con sílabas desordenadas (ej. `TO` y `GA`).
+- Cristal ordena las cajas haciendo clic para colocarlas en los espacios correspondientes.
+- **Validación lógica**:
+  - Al ordenar correctamente (ej. `GA-TO`): la voz lee con alegría la palabra completa:
+    > *"¡Gato! ¡Muy bien, Cristal!"*
+  - Si se equivoca: las cajas regresan suavemente y la voz suena muy dulce y comprensiva:
+    > *"No pasa nada, Cristal, ¡vamos a intentarlo otra vez!"*
+- 4 palabras mágicas: **GA-TO** (🐈), **PE-LO** (🧶), **LU-NA** (🌙), **CA-SA** (🏠).
+- **Pantalla Final de Victoria**:
+  - Lluvia de confeti, imagen festiva de la gatita con gorrito y globos, y el audio final de victoria:
+    > *"¡Lo lograste, Cristal! Eres la mejor amiga de los gatitos. ¡Miau!"*
 
 ---
 
