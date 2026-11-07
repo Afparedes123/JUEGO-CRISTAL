@@ -218,7 +218,7 @@ export default function HeaderNav({
           <div className="flex items-center justify-between pb-2 border-b border-pink-100 mb-3">
             <span className="font-extrabold text-sm text-pink-700 flex items-center gap-1.5">
               <Volume2 className="w-4 h-4 text-pink-500" />
-              Voz de Mujer Latina (Fluida y Humana)
+              Voz Latina Humanizada
             </span>
             <button
               onClick={() => setShowSettings(false)}
@@ -228,68 +228,21 @@ export default function HeaderNav({
             </button>
           </div>
 
-          <div className="space-y-4 text-xs font-bold">
-            {/* Latin Voice Selector */}
-            <div>
-              <label className="block text-slate-700 font-extrabold mb-1">
-                Selecciona la voz para Cristal:
-              </label>
-              <select
-                value={selectedVoiceURI}
-                onChange={handleVoiceSelect}
-                className="w-full bg-pink-50 border-2 border-pink-200 rounded-xl p-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-pink-500"
-              >
-                {availableVoices.length > 0 ? (
-                  availableVoices.map((v) => {
-                    const flag = getCountryFlag(v.lang, v.name);
-                    const isNeural = v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Google');
-                    return (
-                      <option key={v.voiceURI || v.name} value={v.voiceURI || v.name}>
-                        {flag} - {v.name.replace(/Microsoft|Google|Apple/g, '').trim()} {isNeural ? '✨(Natural)' : ''}
-                      </option>
-                    );
-                  })
-                ) : (
-                  <option value="">Cargando voces latinas...</option>
-                )}
-              </select>
-              <p className="text-[10px] text-pink-600 mt-1 font-medium">
-                💡 Consejo: Las voces marcadas con ✨(Natural) suenan 100% humanas y fluidas.
+          <div className="space-y-3.5 text-xs font-bold">
+            {/* Active Studio Voice Card */}
+            <div className="p-3 bg-gradient-to-r from-emerald-50 to-pink-50 border-2 border-emerald-200 rounded-2xl">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="font-extrabold text-emerald-800 text-xs">
+                  Voz de Estudio Latina (Activa)
+                </span>
+                <span className="ml-auto text-[10px] bg-pink-200 text-pink-800 px-1.5 py-0.5 rounded-full font-bold">
+                  100% Nítida
+                </span>
+              </div>
+              <p className="text-[11px] font-semibold text-slate-600 leading-snug">
+                Voz femenina, dulce y humana, grabada en español latinoamericano para que Cristal entienda cada palabra con máxima claridad.
               </p>
-            </div>
-
-            {/* Natural Speed */}
-            <div>
-              <div className="flex justify-between mb-1">
-                <span>Velocidad de habla:</span>
-                <span className="text-pink-600 font-mono">{rate.toFixed(2)}x</span>
-              </div>
-              <input
-                type="range"
-                min="0.8"
-                max="1.15"
-                step="0.02"
-                value={rate}
-                onChange={handleRateChange}
-                className="w-full accent-pink-500 cursor-pointer"
-              />
-            </div>
-
-            {/* Natural Tone */}
-            <div>
-              <div className="flex justify-between mb-1">
-                <span>Tono natural:</span>
-                <span className="text-pink-600 font-mono">{pitch.toFixed(2)}x (Humano)</span>
-              </div>
-              <input
-                type="range"
-                min="0.9"
-                max="1.1"
-                step="0.02"
-                value={pitch}
-                onChange={handlePitchChange}
-                className="w-full accent-pink-500 cursor-pointer"
-              />
             </div>
 
             <button
@@ -297,8 +250,21 @@ export default function HeaderNav({
               className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-extrabold py-2.5 rounded-xl flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all"
             >
               <Volume2 className="w-4 h-4" />
-              <span>Probar voz latina ahora</span>
+              <span>Escuchar voz de prueba</span>
             </button>
+
+            {/* Browser fallback info */}
+            <div className="pt-2 border-t border-pink-100 text-[11px] text-slate-500 space-y-1">
+              <div className="flex justify-between items-center text-slate-700 font-extrabold">
+                <span>Voz de respaldo del sistema:</span>
+                <span className="text-pink-600 font-medium text-[10px]">
+                  {selectedVoiceURI ? 'Detectada' : 'Automática'}
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-400 font-medium">
+                Si alguna frase no tiene audio pregrabado, el navegador usará la voz de respaldo en español latino.
+              </p>
+            </div>
           </div>
         </div>
       )}
