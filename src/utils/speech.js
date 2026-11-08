@@ -80,6 +80,14 @@ export const AUDIO_MANIFEST = {
   'lvl4_ask_casa': '/audio/lvl4_ask_casa.mp3',
   'lvl4_wrong': '/audio/lvl4_wrong.mp3',
   'lvl4_win': '/audio/lvl4_win.mp3',
+
+  // Fase 2: Mapa Mágico y Casa de las Gatitas
+  'splash_welcome': '/audio/splash_welcome.mp3',
+  'map_welcome': '/audio/map_welcome.mp3',
+  'map_locked': '/audio/map_locked.mp3',
+  'reward_welcome': '/audio/reward_welcome.mp3',
+  'reward_thanks': '/audio/reward_thanks.mp3',
+  'reward_need_more': '/audio/reward_need_more.mp3',
 };
 
 /**
@@ -92,6 +100,14 @@ export function resolveAudioForText(text, explicitKey = null) {
 
   const n = normalizeTextForLookup(text);
   if (!n) return null;
+
+  // Fase 2: Mapa Mágico y Casa de las Gatitas
+  if (n.includes('toca el boton brillante para jugar con nosotras')) return '/audio/splash_welcome.mp3';
+  if (n.includes('elige a donde vamos hoy')) return '/audio/map_welcome.mp3';
+  if (n.includes('aun no cristal primero terminemos el nivel anterior')) return '/audio/map_locked.mp3';
+  if (n.includes('gracias por jugar cristal que quieres regalarnos hoy')) return '/audio/reward_welcome.mp3';
+  if (n.includes('gracias cristal nos encanta')) return '/audio/reward_thanks.mp3';
+  if (n.includes('necesitamos ganar mas ovillos')) return '/audio/reward_need_more.mp3';
 
   // Inicio & Guía
   if (n.includes('soy tu nueva amiga gatita') || n.includes('vamos a jugar y aprender juntas')) return '/audio/welcome.mp3';
