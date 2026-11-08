@@ -81,10 +81,12 @@ export const AUDIO_MANIFEST = {
   'lvl4_wrong': '/audio/lvl4_wrong.mp3',
   'lvl4_win': '/audio/lvl4_win.mp3',
 
-  // Fase 2: Mapa Mágico y Casa de las Gatitas
   'splash_welcome': '/audio/splash_welcome.mp3',
+  'lulu_intro': '/audio/lulu_intro.mp3',
+  'mimi_intro': '/audio/mimi_intro.mp3',
   'map_welcome': '/audio/map_welcome.mp3',
   'map_locked': '/audio/map_locked.mp3',
+  'map_guide_cheer': '/audio/map_guide_cheer.mp3',
   'reward_welcome': '/audio/reward_welcome.mp3',
   'reward_thanks': '/audio/reward_thanks.mp3',
   'reward_need_more': '/audio/reward_need_more.mp3',
@@ -119,10 +121,15 @@ export function resolveAudioForText(text, explicitKey = null) {
   if (n.includes('magia pura cristal eres muy inteligente')) return '/audio/cauldron_win.mp3';
   if (n.includes('ganaste un ovillo magico para nuestras gatitas cristal')) return '/audio/win_yarn_modal.mp3';
 
+  // Gatitas individuales Lulú y Mimi
+  if (n.includes('soy lulu') || n.includes('gatita magica vamos a divertirnos')) return '/audio/lulu_intro.mp3';
+  if (n.includes('soy mimi') || n.includes('gatita de las estrellas')) return '/audio/mimi_intro.mp3';
+
   // Fase 2: Mapa Mágico y Casa de las Gatitas
   if (n.includes('toca el boton brillante para jugar con nosotras')) return '/audio/splash_welcome.mp3';
   if (n.includes('elige a donde vamos hoy')) return '/audio/map_welcome.mp3';
   if (n.includes('aun no cristal primero terminemos el nivel anterior')) return '/audio/map_locked.mp3';
+  if (n.includes('tu puedes lograrlo elige una mision')) return '/audio/map_guide_cheer.mp3';
   if (n.includes('gracias por jugar cristal que quieres regalarnos hoy')) return '/audio/reward_welcome.mp3';
   if (n.includes('gracias cristal nos encanta')) return '/audio/reward_thanks.mp3';
   if (n.includes('necesitamos ganar mas ovillos')) return '/audio/reward_need_more.mp3';

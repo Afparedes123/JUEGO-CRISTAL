@@ -28,18 +28,30 @@ class GlobalAudioManager {
     // Efectos de sonido
     this.sfxVolume = 0.7;
 
+    // Control de autoplay y voz pendiente
+    this.pendingVoice = null;
+    this.hasUserInteracted = false;
+
     // Listeners reactivos para la UI
     this.listeners = new Set();
 
-    // Precargar audio context en primer toque
+    // Precargar audio context y desbloquear voz en primer toque
     if (typeof window !== 'undefined') {
       const unlockAudio = () => {
+        this.hasUserInteracted = true;
         this.getAudioContext();
+        if (this.pendingVoice) {
+          const { audioIdOrText, options } = this.pendingVoice;
+          this.pendingVoice = null;
+          this.playVoice(audioIdOrText, options);
+        }
         window.removeEventListener('click', unlockAudio);
         window.removeEventListener('touchstart', unlockAudio);
+        window.removeEventListener('pointerdown', unlockAudio);
       };
       window.addEventListener('click', unlockAudio, { passive: true });
       window.addEventListener('touchstart', unlockAudio, { passive: true });
+      window.addEventListener('pointerdown', unlockAudio, { passive: true });
     }
   }
 
@@ -203,9 +215,14 @@ class GlobalAudioManager {
         const playPromise = audio.play();
         if (playPromise !== undefined) {
           playPromise.catch((err) => {
-            console.warn('Audio play bloqueado por navegador, usando síntesis:', err);
+            console.warn('Audio play bloqueado por política de autoplay del navegador:', err);
             this.currentVoiceAudio = null;
-            this.playVoiceSynthesisFallback(audioIdOrText, options);
+            this.isVoiceSpeaking = false;
+            this.notify({ isVoiceSpeaking: false });
+            // Si el usuario aún no interactuó, guardar para reproducir con el MP3 real al primer clic/toque
+            if (!this.hasUserInteracted) {
+              this.pendingVoice = { audioIdOrText, options };
+            }
           });
         }
         return;
@@ -244,48 +261,74 @@ class GlobalAudioManager {
     this.notify({ isVoiceSpeaking: false });
   }
 
-  // Respaldo sintético si no hay MP3
+  // Respaldo sintético estricto (SOLO VOZ EN ESPAÑOL, NUNCA INGLÉS)
   playVoiceSynthesisFallback(text, options = {}) {
     if (typeof window === 'undefined' || !window.speechSynthesis) {
       if (options.onEnd) options.onEnd();
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'es-MX';
-    utterance.rate = options.rate ?? 0.95;
-    utterance.pitch = options.pitch ?? 1.0;
-    utterance.volume = options.volume ?? this.voiceVolume;
+    const speakWithSpanishVoice = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices || voices.length === 0) {
+        return false;
+      }
 
-    const voices = window.speechSynthesis.getVoices();
-    const latin = voices.find(
-      (v) =>
-        v.lang &&
-        (v.lang.toLowerCase().includes('es-mx') ||
-          v.lang.toLowerCase().includes('es-us') ||
-          v.lang.toLowerCase().includes('es-419'))
-    );
-    if (latin) utterance.voice = latin;
+      // Buscar exclusivamente una voz femenina o neutra en español latinoamericano o español
+      const latinVoice = voices.find(
+        (v) =>
+          v.lang &&
+          (v.lang.toLowerCase().includes('es-mx') ||
+            v.lang.toLowerCase().includes('es-419') ||
+            v.lang.toLowerCase().includes('es-us') ||
+            v.lang.toLowerCase().includes('es-co') ||
+            v.lang.toLowerCase().includes('es-ar') ||
+            v.lang.toLowerCase().startsWith('es'))
+      );
 
-    utterance.onstart = () => {
-      this.isVoiceSpeaking = true;
-      this.notify({ isVoiceSpeaking: true, currentText: text });
-      if (options.onStart) options.onStart();
+      // Si el navegador no tiene ninguna voz en español, NO reproducir voz en inglés
+      if (!latinVoice) {
+        console.warn('No hay voz en español disponible en SpeechSynthesis. Omitiendo síntesis para evitar voz en inglés.');
+        if (options.onEnd) options.onEnd();
+        return true;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.voice = latinVoice;
+      utterance.lang = latinVoice.lang || 'es-MX';
+      utterance.rate = options.rate ?? 0.95;
+      utterance.pitch = options.pitch ?? 1.05;
+      utterance.volume = options.volume ?? this.voiceVolume;
+
+      utterance.onstart = () => {
+        this.isVoiceSpeaking = true;
+        this.notify({ isVoiceSpeaking: true, currentText: text });
+        if (options.onStart) options.onStart();
+      };
+
+      utterance.onend = () => {
+        this.isVoiceSpeaking = false;
+        this.notify({ isVoiceSpeaking: false });
+        if (options.onEnd) options.onEnd();
+      };
+
+      utterance.onerror = () => {
+        this.isVoiceSpeaking = false;
+        this.notify({ isVoiceSpeaking: false });
+        if (options.onEnd) options.onEnd();
+      };
+
+      window.speechSynthesis.speak(utterance);
+      return true;
     };
 
-    utterance.onend = () => {
-      this.isVoiceSpeaking = false;
-      this.notify({ isVoiceSpeaking: false });
-      if (options.onEnd) options.onEnd();
-    };
-
-    utterance.onerror = () => {
-      this.isVoiceSpeaking = false;
-      this.notify({ isVoiceSpeaking: false });
-      if (options.onEnd) options.onEnd();
-    };
-
-    window.speechSynthesis.speak(utterance);
+    if (!speakWithSpanishVoice()) {
+      const onVoicesChanged = () => {
+        window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
+        speakWithSpanishVoice();
+      };
+      window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
+    }
   }
 
   setVoiceVolume(volume) {

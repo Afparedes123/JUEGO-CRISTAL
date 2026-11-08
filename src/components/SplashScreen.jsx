@@ -9,11 +9,11 @@ export default function SplashScreen({ onStartGame }) {
 
   // Audio al entrar: "¡Hola Cristal! Toca el botón brillante para jugar con nosotras."
   useEffect(() => {
+    // Si el navegador permite autoplay sonará de inmediato; si requiere toque,
+    // audioManager lo encola para sonar al primer toque en la pantalla en español latino.
     const welcomeVoiceTimer = setTimeout(() => {
-      audioManager.playVoice(
-        '¡Hola Cristal! Toca el botón brillante para jugar con nosotras.'
-      );
-    }, 450);
+      audioManager.playVoice('splash_welcome');
+    }, 400);
 
     return () => {
       clearTimeout(welcomeVoiceTimer);
@@ -31,10 +31,8 @@ export default function SplashScreen({ onStartGame }) {
       setHasInteracted(true);
       // Iniciar suavemente la música de fondo instrumental (caja de música mágica)
       audioManager.playBGM();
-      // Asegurar que el audio de bienvenida suene si el navegador requería un clic
-      audioManager.playVoice(
-        '¡Hola Cristal! Toca el botón brillante para jugar con nosotras.'
-      );
+      // Asegurar que el audio de bienvenida suene en voz de estudio
+      audioManager.playVoice('splash_welcome');
     }
   };
 
@@ -42,6 +40,7 @@ export default function SplashScreen({ onStartGame }) {
   const handlePlayButtonClick = (e) => {
     e.stopPropagation();
     setAreKittensAwake(true);
+    setHasInteracted(true);
     audioManager.playSFX('sparkle');
     audioManager.playSFX('bell');
     audioManager.playBGM();
@@ -97,7 +96,7 @@ export default function SplashScreen({ onStartGame }) {
             e.stopPropagation();
             setAreKittensAwake(true);
             audioManager.playSFX('meow');
-            audioManager.playVoice('¡Hola Cristal! Soy Lulú, tu gatita mágica.');
+            audioManager.playVoice('lulu_intro');
           }}
           className={`relative group flex flex-col items-center transition-all duration-700 ${
             areKittensAwake ? 'scale-105' : 'scale-95 animate-pulse'
@@ -207,7 +206,7 @@ export default function SplashScreen({ onStartGame }) {
             e.stopPropagation();
             setAreKittensAwake(true);
             audioManager.playSFX('meow');
-            audioManager.playVoice('¡Hola Cristal! Soy Mimi, tu gatita de las estrellas.');
+            audioManager.playVoice('mimi_intro');
           }}
           className={`relative group flex flex-col items-center transition-all duration-700 ${
             areKittensAwake ? 'scale-105' : 'scale-95 animate-pulse delay-200'
@@ -292,9 +291,7 @@ export default function SplashScreen({ onStartGame }) {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            audioManager.playVoice(
-              '¡Hola Cristal! Toca el botón brillante para jugar con nosotras.'
-            );
+            audioManager.playVoice('splash_welcome');
           }}
           className="flex items-center gap-1.5 text-xs font-extrabold text-pink-700 bg-pink-100 hover:bg-pink-200 px-3 py-1.5 rounded-xl transition-all"
           title="Escuchar a las gatitas otra vez"
