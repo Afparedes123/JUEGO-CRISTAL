@@ -133,17 +133,16 @@ export default function CasaGatitas() {
             </div>
           )}
 
-          {/* Gatita Lulú en la Habitación */}
+          {/* Hadita Gatuna Lulú en la Habitación */}
           <div className={`relative flex flex-col items-center transition-transform ${isCelebrating ? 'scale-110 animate-bounce' : 'animate-pulse'}`}>
-            <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-b from-pink-100 to-pink-200 border-4 border-pink-300 shadow-lg flex items-center justify-center overflow-hidden">
-              <img src="/kitten-guide.jpg" alt="Lulú feliz" className="w-full h-full object-cover" />
-              {/* Lazo mágico desbloqueado */}
+            <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-b from-pink-100 to-pink-200 border-4 border-pink-300 shadow-lg flex items-center justify-center overflow-hidden">
+              <img src="/fairy-lulu.jpg" alt="Hadita Lulú feliz" className="w-full h-full object-cover" />
               {hasBow && (
                 <span className="absolute -top-1 left-2 text-3xl animate-bounce">🎀</span>
               )}
             </div>
             <span className="mt-2 text-xs font-black text-pink-700 bg-white/90 px-3 py-0.5 rounded-full shadow-sm">
-              Lulú
+              Hadita Lulú ✨
             </span>
           </div>
 
@@ -170,17 +169,16 @@ export default function CasaGatitas() {
             </div>
           </div>
 
-          {/* Gatita Mimi en la Habitación */}
+          {/* Hadita Gatuna Mimi en la Habitación */}
           <div className={`relative flex flex-col items-center transition-transform ${isCelebrating ? 'scale-110 animate-bounce' : 'animate-pulse delay-150'}`}>
-            <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-b from-purple-100 to-indigo-200 border-4 border-purple-300 shadow-lg flex items-center justify-center overflow-hidden">
-              <img src="/kitten-celebration.jpg" alt="Mimi feliz" className="w-full h-full object-cover" />
-              {/* Sombrerito o estrellita mágica */}
+            <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-b from-purple-100 to-indigo-200 border-4 border-purple-300 shadow-lg flex items-center justify-center overflow-hidden">
+              <img src="/fairy-mimi.jpg" alt="Hadita Mimi feliz" className="w-full h-full object-cover" />
               {hasBow && (
                 <span className="absolute -top-1 right-2 text-3xl animate-bounce">🌸</span>
               )}
             </div>
             <span className="mt-2 text-xs font-black text-purple-700 bg-white/90 px-3 py-0.5 rounded-full shadow-sm">
-              Mimi
+              Hadita Mimi 🌸
             </span>
           </div>
         </div>

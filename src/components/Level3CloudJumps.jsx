@@ -169,8 +169,16 @@ export default function Level3CloudJumps({ onCompleteLevel, onGoToLevel4 }) {
       <div className="w-full">
         <div className="flex flex-wrap items-center justify-between gap-3 bg-white/85 backdrop-blur-md rounded-2xl p-3 sm:p-4 border-2 border-sky-200 shadow-sm mb-3">
           <div className="flex items-center gap-2">
+            {onGoToLevel4 && (
+              <button
+                onClick={onGoToLevel4}
+                className="bg-pink-100 hover:bg-pink-200 text-pink-700 font-black text-xs sm:text-sm px-3 py-1.5 rounded-xl border border-pink-300 transition-all"
+              >
+                ← Mapa
+              </button>
+            )}
             <span className="bg-gradient-to-r from-sky-500 to-indigo-500 text-white font-extrabold text-sm sm:text-base px-3 py-1 rounded-xl shadow-sm">
-              Nivel 3
+              Isla 5
             </span>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-800 tracking-wide flex items-center gap-2">
               <span>Saltos en las Nubes</span>

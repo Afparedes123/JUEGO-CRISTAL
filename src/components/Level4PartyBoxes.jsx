@@ -249,12 +249,20 @@ export default function Level4PartyBoxes({ onRestartAll }) {
       <div className="w-full">
         <div className="flex flex-wrap items-center justify-between gap-3 bg-white/85 backdrop-blur-md rounded-2xl p-3 sm:p-4 border-2 border-amber-200 shadow-sm mb-3">
           <div className="flex items-center gap-2">
+            {onRestartAll && (
+              <button
+                onClick={onRestartAll}
+                className="bg-pink-100 hover:bg-pink-200 text-pink-700 font-black text-xs sm:text-sm px-3 py-1.5 rounded-xl border border-pink-300 transition-all"
+              >
+                ← Mapa
+              </button>
+            )}
             <span className="bg-gradient-to-r from-amber-500 via-pink-500 to-purple-600 text-white font-extrabold text-sm sm:text-base px-3 py-1 rounded-xl shadow-sm flex items-center gap-1.5">
               <PartyPopper className="w-4 h-4" />
-              Nivel 4
+              Isla 8
             </span>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-800 tracking-wide flex items-center gap-2">
-              <span>Fiesta Gatuna - Ordena las cajas</span>
+              <span>Fiesta de Lectura - Ordena las cajas</span>
               <span>🎁🎈</span>
             </h2>
           </div>
