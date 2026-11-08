@@ -4,117 +4,107 @@ import KittenGuide from './KittenGuide';
 import VictoryModal from './VictoryModal';
 import { fireBubbleSparkles, fireVictoryConfetti } from '../utils/confetti';
 import {
-  Sparkles,
   RotateCcw,
   PartyPopper,
   Volume2,
+  ArrowRight,
 } from 'lucide-react';
 
-// Las 4 palabras de la fiesta: GA-TO, PE-LO, LU-NA, CA-SA
-const PARTY_WORDS = [
+// 4 NIVELES DE CAJAS PROGRESIVAS: 2 Sílabas, Más 2 Sílabas, 3 Sílabas y 4 Sílabas
+const PARTY_LEVELS = [
   {
     id: 1,
-    word: 'GATO',
-    lowerWord: 'gato',
-    emoji: '🐈',
-    label: 'El rey de la fiesta de los mininos',
-    syllables: ['GA', 'TO'],
-    scrambled: ['TO', 'GA'],
-    spokenWord: 'Gato',
-    winAudio: 'lvl4_word_gato',
-    askAudio: 'lvl4_ask_gato',
+    name: 'Nivel 1: 2 Sílabas (Inicial)',
+    words: [
+      { word: 'GATO', lowerWord: 'gato', emoji: '🐈', label: 'El rey de la fiesta de los mininos', syllables: ['GA', 'TO'], scrambled: ['TO', 'GA'], spokenWord: 'Gato', winAudio: 'lvl4_word_gato' },
+      { word: 'PELO', lowerWord: 'pelo', emoji: '🧶', label: 'Suave y brillante como el de tu gatita', syllables: ['PE', 'LO'], scrambled: ['LO', 'PE'], spokenWord: 'Pelo', winAudio: 'lvl4_word_pelo' },
+      { word: 'LUNA', lowerWord: 'luna', emoji: '🌙', label: 'Ilumina la noche de baile mágico', syllables: ['LU', 'NA'], scrambled: ['NA', 'LU'], spokenWord: 'Luna', winAudio: 'lvl4_word_luna' },
+      { word: 'CASA', lowerWord: 'casa', emoji: '🏠', label: 'El hogar feliz de Cristal y las haditas', syllables: ['CA', 'SA'], scrambled: ['SA', 'CA'], spokenWord: 'Casa', winAudio: 'lvl4_word_casa' },
+    ],
   },
   {
     id: 2,
-    word: 'PELO',
-    lowerWord: 'pelo',
-    emoji: '🧶',
-    label: 'Suave y brillante como el de tu gatita',
-    syllables: ['PE', 'LO'],
-    scrambled: ['LO', 'PE'],
-    spokenWord: 'Pelo',
-    winAudio: 'lvl4_word_pelo',
-    askAudio: 'lvl4_ask_pelo',
+    name: 'Nivel 2: 2 Sílabas (D, N, B, F, R, V)',
+    words: [
+      { word: 'DADO', lowerWord: 'dado', emoji: '🎲', label: 'Cubo mágico para jugar', syllables: ['DA', 'DO'], scrambled: ['DO', 'DA'], spokenWord: 'Dado', winAudio: 'word_dado' },
+      { word: 'NUBE', lowerWord: 'nube', emoji: '☁️', label: 'Suave y blanca en el cielo', syllables: ['NU', 'BE'], scrambled: ['BE', 'NU'], spokenWord: 'Nube', winAudio: 'word_nube' },
+      { word: 'BOTA', lowerWord: 'bota', emoji: '👢', label: 'Calzado para saltar charcos', syllables: ['BO', 'TA'], scrambled: ['TA', 'BO'], spokenWord: 'Bota', winAudio: 'word_bota' },
+      { word: 'FOCA', lowerWord: 'foca', emoji: '🦭', label: 'Aplaude feliz en el mar', syllables: ['FO', 'CA'], scrambled: ['CA', 'FO'], spokenWord: 'Foca', winAudio: 'word_foca' },
+      { word: 'ROSA', lowerWord: 'rosa', emoji: '🌹', label: 'Flor hermosa y perfumada', syllables: ['RO', 'SA'], scrambled: ['SA', 'RO'], spokenWord: 'Rosa', winAudio: 'word_rosa' },
+      { word: 'VACA', lowerWord: 'vaca', emoji: '🐮', label: 'Nos da leche en la granja', syllables: ['VA', 'CA'], scrambled: ['CA', 'VA'], spokenWord: 'Vaca', winAudio: 'word_vaca' },
+      { word: 'VELA', lowerWord: 'vela', emoji: '🕯️', label: 'Brilla en el pastel de fiesta', syllables: ['VE', 'LA'], scrambled: ['LA', 'VE'], spokenWord: 'Vela', winAudio: 'word_vela' },
+    ],
   },
   {
     id: 3,
-    word: 'LUNA',
-    lowerWord: 'luna',
-    emoji: '🌙',
-    label: 'Ilumina la noche de baile mágico',
-    syllables: ['LU', 'NA'],
-    scrambled: ['NA', 'LU'],
-    spokenWord: 'Luna',
-    winAudio: 'lvl4_word_luna',
-    askAudio: 'lvl4_ask_luna',
+    name: 'Nivel 3: 3 Sílabas (Trisílabas)',
+    words: [
+      { word: 'PELOTA', lowerWord: 'pelota', emoji: '⚽', label: 'Tres sílabas: PE - LO - TA', syllables: ['PE', 'LO', 'TA'], scrambled: ['TA', 'PE', 'LO'], spokenWord: 'Pelota', winAudio: 'word_pelota' },
+      { word: 'PALOMA', lowerWord: 'paloma', emoji: '🕊️', label: 'Tres sílabas: PA - LO - MA', syllables: ['PA', 'LO', 'MA'], scrambled: ['MA', 'PA', 'LO'], spokenWord: 'Paloma', winAudio: 'word_paloma' },
+      { word: 'CAMISA', lowerWord: 'camisa', emoji: '👕', label: 'Tres sílabas: CA - MI - SA', syllables: ['CA', 'MI', 'SA'], scrambled: ['SA', 'CA', 'MI'], spokenWord: 'Camisa', winAudio: 'word_camisa' },
+      { word: 'MALETA', lowerWord: 'maleta', emoji: '🧳', label: 'Tres sílabas: MA - LE - TA', syllables: ['MA', 'LE', 'TA'], scrambled: ['TA', 'MA', 'LE'], spokenWord: 'Maleta', winAudio: 'word_maleta' },
+      { word: 'TOMATE', lowerWord: 'tomate', emoji: '🍅', label: 'Tres sílabas: TO - MA - TE', syllables: ['TO', 'MA', 'TE'], scrambled: ['TE', 'TO', 'MA'], spokenWord: 'Tomate', winAudio: 'word_tomate' },
+      { word: 'ZAPATO', lowerWord: 'zapato', emoji: '👟', label: 'Tres sílabas: ZA - PA - TO', syllables: ['ZA', 'PA', 'TO'], scrambled: ['TO', 'ZA', 'PA'], spokenWord: 'Zapato', winAudio: 'word_zapato' },
+      { word: 'CONEJO', lowerWord: 'conejo', emoji: '🐰', label: 'Tres sílabas: CO - NE - JO', syllables: ['CO', 'NE', 'JO'], scrambled: ['JO', 'CO', 'NE'], spokenWord: 'Conejo', winAudio: 'word_conejo' },
+      { word: 'JIRAFA', lowerWord: 'jirafa', emoji: '🦒', label: 'Tres sílabas: JI - RA - FA', syllables: ['JI', 'RA', 'FA'], scrambled: ['FA', 'JI', 'RA'], spokenWord: 'Jirafa', winAudio: 'word_jirafa' },
+    ],
   },
   {
     id: 4,
-    word: 'CASA',
-    lowerWord: 'casa',
-    emoji: '🏠',
-    label: 'El hogar feliz de Cristal y las haditas',
-    syllables: ['CA', 'SA'],
-    scrambled: ['SA', 'CA'],
-    spokenWord: 'Casa',
-    winAudio: 'lvl4_word_casa',
-    askAudio: 'lvl4_ask_casa',
+    name: 'Nivel 4: 4 Sílabas (Polisílabas)',
+    words: [
+      { word: 'MARIPOSA', lowerWord: 'mariposa', emoji: '🦋', label: 'Cuatro sílabas: MA - RI - PO - SA', syllables: ['MA', 'RI', 'PO', 'SA'], scrambled: ['PO', 'MA', 'SA', 'RI'], spokenWord: 'Mariposa', winAudio: 'word_mariposa' },
+      { word: 'CARAMELO', lowerWord: 'caramelo', emoji: '🍬', label: 'Cuatro sílabas: CA - RA - ME - LO', syllables: ['CA', 'RA', 'ME', 'LO'], scrambled: ['ME', 'CA', 'LO', 'RA'], spokenWord: 'Caramelo', winAudio: 'word_caramelo' },
+      { word: 'ELEFANTE', lowerWord: 'elefante', emoji: '🐘', label: 'Cuatro sílabas: E - LE - FAN - TE', syllables: ['E', 'LE', 'FAN', 'TE'], scrambled: ['FAN', 'E', 'TE', 'LE'], spokenWord: 'Elefante', winAudio: 'word_elefante' },
+      { word: 'BICICLETA', lowerWord: 'bicicleta', emoji: '🚲', label: 'Cuatro sílabas: BI - CI - CLE - TA', syllables: ['BI', 'CI', 'CLE', 'TA'], scrambled: ['CLE', 'BI', 'TA', 'CI'], spokenWord: 'Bicicleta', winAudio: 'word_bicicleta' },
+      { word: 'CHOCOLATE', lowerWord: 'chocolate', emoji: '🍫', label: 'Cuatro sílabas: CHO - CO - LA - TE', syllables: ['CHO', 'CO', 'LA', 'TE'], scrambled: ['LA', 'CHO', 'TE', 'CO'], spokenWord: 'Chocolate', winAudio: 'word_chocolate' },
+    ],
   },
 ];
 
 const BOX_DESIGNS = [
-  {
-    bg: 'bg-gradient-to-br from-pink-100 via-rose-50 to-pink-200 border-pink-400 text-pink-700 shadow-pink-200',
-  },
-  {
-    bg: 'bg-gradient-to-br from-purple-100 via-indigo-50 to-purple-200 border-purple-400 text-purple-700 shadow-purple-200',
-  },
+  { bg: 'bg-gradient-to-br from-pink-100 via-rose-50 to-pink-200 border-pink-400 text-pink-700 shadow-pink-200' },
+  { bg: 'bg-gradient-to-br from-purple-100 via-indigo-50 to-purple-200 border-purple-400 text-purple-700 shadow-purple-200' },
+  { bg: 'bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200 border-amber-400 text-amber-800 shadow-amber-200' },
+  { bg: 'bg-gradient-to-br from-sky-100 via-blue-50 to-sky-200 border-sky-400 text-sky-800 shadow-sky-200' },
 ];
 
 export default function Level4PartyBoxes({ onRestartAll }) {
-  const { audioManager, registrarAcierto, registrarFallo, navegarA } = useGame();
+  const { audioManager, registrarAcierto, registrarFallo, sumarOvillos, navegarA } = useGame();
 
-  const [currentStep, setCurrentStep] = useState(0); // 0 a 3 para las 4 palabras
+  const [levelIdx, setLevelIdx] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
   const [placedSyllables, setPlacedSyllables] = useState([]);
   const [availableBoxes, setAvailableBoxes] = useState([]);
   const [dialogue, setDialogue] = useState(
-    '¡Cristal, es hora de la fiesta gatuna! Ayúdame a ordenar las cajas para descubrir las palabras mágicas.'
+    '¡Cristal, es hora de la fiesta de lectura! Ordena las sílabas para descubrir palabras de 2, 3 y 4 sílabas.'
   );
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [isWobbling, setIsWobbling] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [completedWords, setCompletedWords] = useState([]);
+  const [levelModal, setLevelModal] = useState(false);
+  const [isCompletedAll, setIsCompletedAll] = useState(false);
 
   const slotsRef = useRef(null);
   const timersRef = useRef([]);
 
-  const currentItem = PARTY_WORDS[currentStep];
+  const currentLevel = PARTY_LEVELS[levelIdx];
+  const currentItem = currentLevel.words[currentStep] || currentLevel.words[0];
+  const numSlots = currentItem.syllables.length;
 
   const clearAllTimers = () => {
     timersRef.current.forEach((t) => clearTimeout(t));
     timersRef.current = [];
   };
 
-  // Audio inicial al entrar al nivel
+  // Inicializar las cajas disponibles para la palabra actual y pronunciar
   useEffect(() => {
-    const timer = setTimeout(() => {
-      audioManager.playVoice('lvl4_intro');
-    }, 350);
-
-    return () => {
-      clearTimeout(timer);
-      clearAllTimers();
-    };
-  }, [audioManager]);
-
-  // Inicializar las cajas disponibles para la palabra actual
-  useEffect(() => {
-    if (isCompleted || !currentItem) return;
+    if (isCompletedAll || levelModal || !currentItem) return;
+    clearAllTimers();
 
     setAvailableBoxes(
       currentItem.scrambled.map((syl, idx) => ({
-        id: `${syl}-${idx}-${Date.now()}`,
+        id: `${syl}-${idx}-${Date.now()}-${Math.random()}`,
         syllable: syl,
         lower: syl.toLowerCase(),
         design: BOX_DESIGNS[idx % BOX_DESIGNS.length],
@@ -124,32 +114,35 @@ export default function Level4PartyBoxes({ onRestartAll }) {
     setIsEvaluating(false);
     setIsCorrect(false);
     setIsWobbling(false);
-  }, [currentStep, isCompleted, currentItem]);
 
-  // Al tocar una caja disponible abajo: pronuncia la sílaba limpia y la sube
+    const t = setTimeout(() => {
+      audioManager.playVoice(currentItem.winAudio);
+    }, 300);
+    timersRef.current.push(t);
+
+    return () => clearAllTimers();
+  }, [levelIdx, currentStep, isCompletedAll, levelModal, currentItem, audioManager]);
+
   const handleSelectBox = (boxItem) => {
-    if (isEvaluating || placedSyllables.length >= 2) return;
+    if (isEvaluating || placedSyllables.length >= numSlots) return;
 
     const newPlaced = [...placedSyllables, boxItem];
     const newAvailable = availableBoxes.filter((b) => b.id !== boxItem.id);
 
     setPlacedSyllables(newPlaced);
     setAvailableBoxes(newAvailable);
-
     audioManager.playSFX('pop');
-    // Si es la primera caja colocada, pronuncia la sílaba limpia (ej. syl_ga, syl_to)
-    if (newPlaced.length === 1) {
-      audioManager.playVoice(`syl_${boxItem.lower}`);
-    }
 
-    // Si ya colocó las 2 cajas, evaluar la palabra formada
-    if (newPlaced.length === 2) {
+    if (newPlaced.length < numSlots) {
+      // Si aún faltan sílabas por colocar, pronuncia la sílaba limpia
+      audioManager.playVoice(`syl_${boxItem.lower}`);
+    } else {
+      // Ya colocó todas las sílabas de la palabra: evaluar sin montar el audio de la última sílaba
       setIsEvaluating(true);
       evaluateWord(newPlaced);
     }
   };
 
-  // Permitir devolver una caja colocada antes de poner la segunda
   const handleReturnBox = (boxItem) => {
     if (isEvaluating) return;
     setPlacedSyllables(placedSyllables.filter((b) => b.id !== boxItem.id));
@@ -157,13 +150,12 @@ export default function Level4PartyBoxes({ onRestartAll }) {
     audioManager.playSFX('bubble');
   };
 
-  // Evaluar si las 2 cajas forman la palabra correcta
   const evaluateWord = (placed) => {
+    clearAllTimers();
     const formedWord = placed.map((b) => b.syllable).join('');
     const expectedWord = currentItem.syllables.join('');
 
     if (formedWord === expectedWord) {
-      // ¡ACIERTO!
       setIsCorrect(true);
       audioManager.playSFX('celebration');
       registrarAcierto(currentItem.word);
@@ -183,50 +175,48 @@ export default function Level4PartyBoxes({ onRestartAll }) {
       setDialogue(praiseText);
       audioManager.playVoice(currentItem.winAudio);
 
-      const updatedWords = completedWords.includes(currentItem.word)
-        ? completedWords
-        : [...completedWords, currentItem.word];
-      setCompletedWords(updatedWords);
-
       const nextStep = currentStep + 1;
 
-      if (nextStep >= PARTY_WORDS.length) {
-        const winTimer = setTimeout(() => {
-          setIsCompleted(true);
-          audioManager.playSFX('celebration');
-          audioManager.playVoice('lvl4_win');
-          try {
-            fireVictoryConfetti();
-          } catch (e) {
-            // Ignorar
-          }
-        }, 2500);
-        timersRef.current.push(winTimer);
-      } else {
+      if (nextStep < currentLevel.words.length) {
         const nextWordTimer = setTimeout(() => {
           setCurrentStep(nextStep);
-          const nextWordItem = PARTY_WORDS[nextStep];
-          const nextAsk = `¡Ahora ordenemos las sílabas para formar ${nextWordItem.spokenWord}! (${nextWordItem.label})`;
-          setDialogue(nextAsk);
-          audioManager.playVoice(nextWordItem.askAudio);
-        }, 2600);
+          const nextWordItem = currentLevel.words[nextStep];
+          setDialogue(`¡Ahora ordenemos las sílabas para formar ${nextWordItem.spokenWord}!`);
+        }, 2500);
         timersRef.current.push(nextWordTimer);
+      } else {
+        sumarOvillos(3);
+        const endLevelTimer = setTimeout(() => {
+          if (levelIdx + 1 < PARTY_LEVELS.length) {
+            audioManager.playSFX('celebration');
+            setLevelModal(true);
+          } else {
+            audioManager.playSFX('celebration');
+            audioManager.playVoice('lvl4_win');
+            try {
+              fireVictoryConfetti();
+            } catch (e) {
+              // Ignorar
+            }
+            setIsCompletedAll(true);
+          }
+        }, 2500);
+        timersRef.current.push(endLevelTimer);
       }
     } else {
-      // ORDEN INVERTIDO: Regresar cajas suavemente con ánimo dulce
       setIsWobbling(true);
       audioManager.playSFX('wobble');
       registrarFallo(currentItem.word);
 
       const comfortingText =
-        'No pasa nada, Cristal, ¡vamos a intentarlo otra vez!';
+        'No pasa nada, Cristal, ¡vamos a intentarlo en el orden correcto!';
       setDialogue(comfortingText);
       audioManager.playVoice('lvl4_wrong');
 
       const resetTimer = setTimeout(() => {
         setAvailableBoxes(
           currentItem.scrambled.map((syl, idx) => ({
-            id: `${syl}-${idx}-${Date.now()}`,
+            id: `${syl}-${idx}-${Date.now()}-${Math.random()}`,
             syllable: syl,
             lower: syl.toLowerCase(),
             design: BOX_DESIGNS[idx % BOX_DESIGNS.length],
@@ -240,142 +230,115 @@ export default function Level4PartyBoxes({ onRestartAll }) {
     }
   };
 
-  const handleJumpToWord = (idx) => {
-    clearAllTimers();
-    const targetWord = PARTY_WORDS[idx];
-    setCurrentStep(idx);
-    setDialogue(
-      `¡Ordenemos las sílabas para formar ${targetWord.spokenWord}! (${targetWord.label})`
-    );
-    audioManager.playSFX('bubble');
-    audioManager.playVoice(targetWord.askAudio);
-  };
-
-  const handleResetLevel = () => {
-    clearAllTimers();
-    setCurrentStep(0);
-    setCompletedWords([]);
-    setIsCompleted(false);
-    setIsEvaluating(false);
-    setIsCorrect(false);
-    setIsWobbling(false);
-
-    const welcome =
-      '¡Cristal, es hora de la fiesta gatuna! Ayúdame a ordenar las cajas para descubrir las palabras mágicas.';
-    setDialogue(welcome);
-    audioManager.playVoice('lvl4_intro');
-  };
-
   return (
-    <div className="relative flex flex-col items-center justify-between min-h-[88vh] py-2 px-3 sm:px-6 w-full max-w-5xl mx-auto select-none">
-      {/* HEADER SUPERIOR Y PROGRESO */}
+    <div className="relative flex flex-col items-center justify-between min-h-[90vh] py-2 px-3 sm:px-5 w-full max-w-5xl mx-auto select-none">
+      {/* HEADER SUPERIOR Y SELECTOR DE LOS 4 NIVELES DE COMPLEJIDAD */}
       <div className="w-full">
-        <div className="flex flex-wrap items-center justify-between gap-2 bg-white/90 backdrop-blur-md rounded-2xl p-3 border-2 border-amber-200 shadow-sm mb-2">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                audioManager.playSFX('bubble');
-                if (onRestartAll) onRestartAll();
-                else navegarA('map');
-              }}
-              className="bg-pink-100 hover:bg-pink-200 text-pink-700 font-black text-xs sm:text-sm px-3 py-1.5 rounded-xl border border-pink-300 transition-all"
-            >
-              ← Mapa
-            </button>
-            <span className="bg-gradient-to-r from-amber-500 via-pink-500 to-purple-600 text-white font-extrabold text-xs sm:text-sm px-3 py-1 rounded-xl shadow-sm flex items-center gap-1">
-              <PartyPopper className="w-4 h-4" />
-              Isla 8
-            </span>
-            <h2 className="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-1.5">
-              <span>Fiesta de Lectura</span>
-              <span>🎁🎈</span>
-            </h2>
+        <div className="flex flex-wrap items-center justify-between gap-2 bg-white/90 backdrop-blur-md rounded-2xl p-2.5 border-2 border-amber-200 shadow-sm mb-2">
+          <button
+            type="button"
+            onClick={() => {
+              clearAllTimers();
+              audioManager.stopVoice();
+              audioManager.playSFX('bubble');
+              if (onRestartAll) onRestartAll();
+              else navegarA('map');
+            }}
+            className="bg-pink-100 hover:bg-pink-200 text-pink-700 font-black text-xs sm:text-sm px-3 py-1.5 rounded-xl border border-pink-300 transition-all"
+          >
+            ← Mapa
+          </button>
+
+          {/* Selector de los 4 Niveles (2, 3 y 4 sílabas) */}
+          <div className="flex flex-wrap items-center justify-center gap-1">
+            {PARTY_LEVELS.map((lvl, idx) => (
+              <button
+                key={lvl.id}
+                type="button"
+                onClick={() => {
+                  clearAllTimers();
+                  setLevelIdx(idx);
+                  setCurrentStep(0);
+                  setLevelModal(false);
+                }}
+                className={`px-2.5 py-1 rounded-xl font-black text-[11px] sm:text-xs transition-all cursor-pointer ${
+                  idx === levelIdx
+                    ? 'bg-gradient-to-r from-amber-500 via-pink-500 to-purple-600 text-white shadow-sm scale-105'
+                    : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200'
+                }`}
+              >
+                {lvl.name}
+              </button>
+            ))}
           </div>
 
-          {/* Progreso de las 4 Palabras (Clicables) */}
-          <div className="flex items-center gap-1.5 bg-amber-50 px-2.5 py-1.5 rounded-xl border border-amber-200">
-            <span className="text-xs font-bold text-amber-900 hidden sm:inline">Palabras:</span>
-            <div className="flex items-center gap-1">
-              {PARTY_WORDS.map((w, idx) => {
-                const isDone =
-                  completedWords.includes(w.word) ||
-                  idx < currentStep ||
-                  isCompleted;
-                const isCurrent = idx === currentStep;
-
-                return (
-                  <button
-                    key={w.word}
-                    type="button"
-                    onClick={() => handleJumpToWord(idx)}
-                    className={`px-2.5 py-1 rounded-lg font-black text-xs sm:text-sm transition-all cursor-pointer ${
-                      isCurrent
-                        ? 'bg-amber-400 text-amber-950 ring-2 ring-yellow-300 scale-110 shadow-sm'
-                        : isDone
-                        ? 'bg-gradient-to-r from-emerald-400 to-teal-400 text-white shadow-sm'
-                        : 'bg-white border border-amber-300 text-amber-700'
-                    }`}
-                  >
-                    {w.word}
-                  </button>
-                );
-              })}
-            </div>
-            <span className="font-extrabold text-amber-800 ml-1 text-xs sm:text-sm">
-              {Math.min(completedWords.length, 4)}/4
-            </span>
-          </div>
+          <span className="font-extrabold text-amber-800 text-xs sm:text-sm bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200">
+            Palabra {currentStep + 1}/{currentLevel.words.length} 🎁
+          </span>
         </div>
 
-        {/* Guía con Hadita Lulú Realista */}
+        {/* Pestañas de palabras del nivel actual */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 mb-2">
+          {currentLevel.words.map((w, idx) => (
+            <button
+              key={w.word}
+              type="button"
+              onClick={() => {
+                clearAllTimers();
+                setCurrentStep(idx);
+              }}
+              className={`px-2.5 py-1 rounded-xl font-black text-xs transition-all cursor-pointer ${
+                idx === currentStep
+                  ? 'bg-amber-400 text-amber-950 ring-2 ring-yellow-300 scale-105 shadow-sm'
+                  : idx < currentStep
+                  ? 'bg-emerald-400 text-white'
+                  : 'bg-white border border-amber-300 text-amber-800'
+              }`}
+            >
+              {w.emoji} {w.word}
+            </button>
+          ))}
+        </div>
+
+        {/* Guía con Hadita Lulú */}
         <KittenGuide
           currentDialogue={dialogue}
-          customImage={isCorrect || isCompleted ? '/fairy-mimi.jpg' : '/fairy-lulu.jpg'}
+          customImage={isCorrect || isCompletedAll ? '/fairy-mimi.jpg' : '/fairy-lulu.jpg'}
           onKittenClick={() => {
-            audioManager.playVoice(currentItem.askAudio);
+            audioManager.playVoice(currentItem.winAudio);
           }}
         />
       </div>
 
       {/* ESCENARIO PRINCIPAL DE LA FIESTA DE PALABRAS */}
-      <div className="relative w-full my-2 min-h-[390px] rounded-3xl bg-gradient-to-b from-amber-100/80 via-pink-100/70 to-purple-100/80 border-4 border-white shadow-lg flex flex-col items-center justify-between p-4 sm:p-6 overflow-hidden">
-        {/* Globos y destellos festivos */}
-        <div className="absolute top-2 left-5 text-2xl sm:text-3xl pointer-events-none">
-          🎈
-        </div>
-        <div className="absolute top-3 right-6 text-2xl sm:text-3xl pointer-events-none">
-          ✨
-        </div>
-
+      <div className="relative w-full my-1.5 min-h-[360px] rounded-3xl bg-gradient-to-b from-amber-100/80 via-pink-100/70 to-purple-100/80 border-4 border-white shadow-lg flex flex-col items-center justify-between p-4 sm:p-5 overflow-hidden">
         {/* Imagen / Emoji de la palabra + Botón para escuchar */}
         <div className="text-center z-10 flex flex-col items-center">
           <button
             type="button"
-            onClick={() => audioManager.playVoice(currentItem.askAudio)}
-            className="cursor-pointer w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white shadow-lg border-4 border-amber-300 flex items-center justify-center text-4xl sm:text-5xl hover:scale-105 active:scale-95 transition-transform mb-1.5"
-            title="Toca para escuchar la palabra objetivo"
+            onClick={() => audioManager.playVoice(currentItem.winAudio)}
+            className="cursor-pointer w-18 h-18 sm:w-22 sm:h-22 rounded-full bg-white shadow-lg border-4 border-amber-300 flex items-center justify-center text-4xl sm:text-5xl hover:scale-105 active:scale-95 transition-transform mb-1 p-3"
           >
             {currentItem?.emoji}
           </button>
           <button
             type="button"
-            onClick={() => audioManager.playVoice(currentItem.askAudio)}
-            className="inline-flex items-center gap-1.5 text-sm sm:text-base font-black text-purple-900 bg-white/85 px-3.5 py-1 rounded-full border border-purple-200 shadow-sm"
+            onClick={() => audioManager.playVoice(currentItem.winAudio)}
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-purple-900 bg-white/85 px-3.5 py-1 rounded-full border border-purple-200 shadow-sm"
           >
             <Volume2 className="w-4 h-4 text-pink-600" />
             <span>
-              Forma: {currentItem?.word} ({currentItem?.lowerWord})
+              Forma ({numSlots} sílabas): {currentItem?.word} ({currentItem?.lowerWord})
             </span>
           </button>
         </div>
 
-        {/* CASILLAS DE DESTINO: Donde se colocan las 2 sílabas (SIN ETIQUETA QUE TAPE EL TEXTO) */}
+        {/* CASILLAS DE DESTINO (2, 3 o 4 sílabas, 100% despejadas) */}
         <div
           ref={slotsRef}
-          className="w-full max-w-md my-3 flex items-center justify-center gap-4 sm:gap-6 z-10"
+          className="w-full max-w-2xl my-2.5 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 z-10"
         >
-          {[0, 1].map((slotIndex) => {
+          {Array.from({ length: numSlots }).map((_, slotIndex) => {
             const placedBox = placedSyllables[slotIndex];
 
             return (
@@ -383,7 +346,7 @@ export default function Level4PartyBoxes({ onRestartAll }) {
                 key={slotIndex}
                 type="button"
                 onClick={() => placedBox && handleReturnBox(placedBox)}
-                className={`relative w-32 h-28 sm:w-40 sm:h-32 rounded-3xl border-4 transition-all duration-300 flex flex-col items-center justify-center select-none cursor-pointer ${
+                className={`relative w-24 h-24 sm:w-32 sm:h-28 rounded-3xl border-4 transition-all duration-300 flex flex-col items-center justify-center select-none cursor-pointer ${
                   placedBox
                     ? isCorrect
                       ? 'bg-emerald-100 border-emerald-400 text-emerald-800 scale-105 ring-4 ring-emerald-300 shadow-xl'
@@ -392,30 +355,25 @@ export default function Level4PartyBoxes({ onRestartAll }) {
                       : 'bg-white border-pink-400 text-pink-700 shadow-xl'
                     : 'bg-white/70 border-dashed border-purple-300 text-purple-400'
                 }`}
-                title={
-                  placedBox
-                    ? 'Toca para devolver esta sílaba'
-                    : `Espacio para sílaba ${slotIndex + 1}`
-                }
               >
                 {placedBox ? (
                   <div className="flex flex-col items-center justify-center">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl sm:text-5xl font-black tracking-wide leading-none">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-3xl sm:text-4xl font-black tracking-wide leading-none">
                         {placedBox.syllable}
                       </span>
-                      <span className="text-2xl sm:text-3xl font-bold opacity-85 leading-none">
+                      <span className="text-xl sm:text-2xl font-bold opacity-85 leading-none">
                         {placedBox.lower}
                       </span>
                     </div>
                     <span className="text-[10px] font-bold opacity-60 mt-1">
-                      toca para cambiar
+                      cambiar
                     </span>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center text-center p-2 opacity-75">
-                    <span className="text-2xl sm:text-3xl">🎁</span>
-                    <span className="text-xs font-extrabold text-purple-500 mt-1">
+                  <div className="flex flex-col items-center text-center p-1 opacity-75">
+                    <span className="text-xl sm:text-2xl">🎁</span>
+                    <span className="text-[11px] font-extrabold text-purple-500 mt-0.5">
                       Sílaba {slotIndex + 1}
                     </span>
                   </div>
@@ -426,73 +384,90 @@ export default function Level4PartyBoxes({ onRestartAll }) {
         </div>
 
         {/* SÍLABAS PARA ELEGIR ABAJO: 100% DESPEJADAS SIN NINGÚN CÍRCULO "CAJA" ENCIMA */}
-        <div className="w-full max-w-md text-center z-10">
-          <p className="text-xs sm:text-sm font-extrabold text-purple-900 mb-2 flex items-center justify-center gap-1.5">
-            <span>👇</span>
-            <span>Cristal, toca las sílabas en orden para formar {currentItem?.word}:</span>
+        <div className="w-full max-w-2xl text-center z-10">
+          <p className="text-xs sm:text-sm font-extrabold text-purple-900 mb-2">
+            👇 Toca las {numSlots} sílabas en orden para formar <strong>{currentItem?.word}</strong>:
           </p>
 
-          <div className="flex items-center justify-center gap-5 sm:gap-8 min-h-[115px]">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 min-h-[100px]">
             {availableBoxes.map((boxItem) => (
               <button
                 key={boxItem.id}
                 type="button"
                 onClick={() => handleSelectBox(boxItem)}
-                className={`relative w-32 h-28 sm:w-36 sm:h-32 rounded-3xl border-4 flex flex-col items-center justify-center shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer ${boxItem.design.bg}`}
-                title={`Elegir la sílaba ${boxItem.syllable}`}
+                className={`relative w-24 h-24 sm:w-32 sm:h-28 rounded-3xl border-4 flex flex-col items-center justify-center shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer ${boxItem.design.bg}`}
               >
-                {/* Sílaba completamente despejada y grande en Mayúscula y Minúscula */}
-                <div className="flex items-baseline justify-center gap-2">
-                  <span className="font-black text-4xl sm:text-5xl leading-none tracking-wide">
+                <div className="flex items-baseline justify-center gap-1.5">
+                  <span className="font-black text-3xl sm:text-4xl leading-none tracking-wide">
                     {boxItem.syllable}
                   </span>
-                  <span className="font-bold text-2xl sm:text-3xl opacity-85 leading-none">
+                  <span className="font-bold text-xl sm:text-2xl opacity-85 leading-none">
                     {boxItem.lower}
                   </span>
                 </div>
 
-                <span className="mt-2 text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-white/80 text-purple-800 shadow-sm">
-                  ▲ Toca para subir
+                <span className="mt-1.5 text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-white/80 text-purple-800 shadow-sm">
+                  ▲ Subir
                 </span>
               </button>
             ))}
-
-            {availableBoxes.length === 0 && !isCorrect && (
-              <div className="text-sm font-bold text-purple-700 animate-pulse">
-                ✨ Comprobando la palabra mágica...
-              </div>
-            )}
           </div>
         </div>
       </div>
 
-      {/* CONTROLES INFERIORES */}
-      <div className="flex items-center justify-between w-full pt-1">
-        <button
-          type="button"
-          onClick={handleResetLevel}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-white/90 hover:bg-white text-slate-700 text-xs sm:text-sm font-bold border border-amber-200 shadow-sm active:scale-95 transition-all"
-        >
-          <RotateCcw className="w-4 h-4 text-amber-500" />
-          <span>Reiniciar Fiesta</span>
-        </button>
-
-        <div className="text-xs sm:text-sm font-extrabold text-amber-900 bg-amber-100/90 px-4 py-2 rounded-2xl border border-amber-200">
-          <span>
-            Palabra {currentStep + 1} de 4: {currentItem?.spokenWord} (
-            {currentItem?.syllables.join(' + ')}) 🐈🎁
-          </span>
+      {/* MODAL AL TERMINAR UN NIVEL DE CAJAS */}
+      {levelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/60 backdrop-blur-md">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center border-4 border-amber-300 shadow-2xl">
+            <img
+              src="/fairy-lulu.jpg"
+              alt="Hadita Lulú"
+              className="w-28 h-28 mx-auto rounded-full border-4 border-amber-300 object-cover shadow-lg mb-3"
+            />
+            <h2 className="text-2xl font-black text-purple-800 mb-1">
+              ¡Superaste el {currentLevel.name}! 🎁🎉
+            </h2>
+            <p className="text-sm font-bold text-slate-600 mb-5">
+              ¡Ahora vamos a ordenar palabras con más sílabas!
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setLevelModal(false);
+                  setLevelIdx((prev) => prev + 1);
+                  setCurrentStep(0);
+                }}
+                className="w-full py-3.5 rounded-2xl font-black text-lg text-white bg-gradient-to-r from-emerald-500 to-teal-500 shadow-lg flex items-center justify-center gap-2"
+              >
+                <span>¡Jugar {PARTY_LEVELS[levelIdx + 1]?.name}!</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setLevelModal(false);
+                  if (onRestartAll) onRestartAll();
+                  else navegarA('map');
+                }}
+                className="w-full py-2.5 rounded-2xl font-bold text-sm text-purple-700 bg-purple-100 hover:bg-purple-200"
+              >
+                Volver al Mapa Mágico
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* PANTALLA DE VICTORIA FINAL */}
-      {isCompleted && (
+      {isCompletedAll && (
         <VictoryModal
           title="¡Lo lograste, Cristal!"
-          subtitle="¡Formaste GATO, PELO, LUNA y CASA! Eres una gran campeona de la lectura."
+          subtitle="¡Ordenaste palabras de 2, 3 y 4 sílabas! Eres una gran campeona de la lectura."
           levelIdToUnlock="mision8"
           yarnReward={5}
           onReturnToMap={() => {
+            setIsCompletedAll(false);
             if (onRestartAll) onRestartAll();
             else navegarA('map');
           }}

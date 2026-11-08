@@ -1,190 +1,152 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import VictoryModal from './VictoryModal';
-import { Sparkles, ArrowLeft, RotateCcw, Volume2, CheckCircle2 } from 'lucide-react';
+import {
+  Sparkles,
+  ArrowLeft,
+  RotateCcw,
+  Volume2,
+  CheckCircle2,
+  ArrowRight,
+} from 'lucide-react';
 
-// Vocales y Consonantes en Mayúscula y Minúscula para trazar y escribir
-const TRACE_LETTERS = [
+// LAS 27 LETRAS DEL ABECEDARIO EN MAYÚSCULAS Y MINÚSCULAS + NIVEL DE SÍLABAS
+const TRACE_LEVELS = [
   {
-    key: 'A',
-    display: 'A',
-    pair: 'A / a',
-    title: 'Letra A Mayúscula',
-    word: 'Abeja 🐝',
-    audioKey: 'let_a',
-    svgPath: 'M 90,320 L 200,70 L 310,320 M 135,220 L 265,220',
-    checkpoints: [
-      { id: 0, x: 90, y: 320, label: '1' },
-      { id: 1, x: 145, y: 195, label: '' },
-      { id: 2, x: 200, y: 70, label: '2' },
-      { id: 3, x: 255, y: 195, label: '' },
-      { id: 4, x: 310, y: 320, label: '3' },
-      { id: 5, x: 200, y: 220, label: '4' },
+    id: 1,
+    name: 'Nivel 1: Vocales (A-U)',
+    letters: [
+      { key: 'A', lower: 'a', word: 'Abeja 🐝', audioKey: 'let_a' },
+      { key: 'E', lower: 'e', word: 'Estrella ⭐', audioKey: 'let_e' },
+      { key: 'I', lower: 'i', word: 'Isla 🏝️', audioKey: 'let_i' },
+      { key: 'O', lower: 'o', word: 'Osito 🧸', audioKey: 'let_o' },
+      { key: 'U', lower: 'u', word: 'Unicornio 🦄', audioKey: 'let_u' },
     ],
   },
   {
-    key: 'a',
-    display: 'a',
-    pair: 'a / A',
-    title: 'Letra a Minúscula',
-    word: 'árbol 🌳',
-    audioKey: 'vocal_a',
-    svgPath: 'M 255,150 A 75,75 0 1,0 255,270 M 260,130 L 260,310',
-    checkpoints: [
-      { id: 0, x: 200, y: 135, label: '1' },
-      { id: 1, x: 120, y: 210, label: '2' },
-      { id: 2, x: 200, y: 285, label: '3' },
-      { id: 3, x: 260, y: 150, label: '4' },
-      { id: 4, x: 260, y: 300, label: '5' },
+    id: 2,
+    name: 'Nivel 2: Letras M, P, S, L, T',
+    letters: [
+      { key: 'M', lower: 'm', word: 'Mamá 👩', audioKey: 'let_m' },
+      { key: 'P', lower: 'p', word: 'Papá 👨', audioKey: 'let_p' },
+      { key: 'S', lower: 's', word: 'Sol ☀️', audioKey: 'let_s' },
+      { key: 'L', lower: 'l', word: 'Luna 🌙', audioKey: 'let_l' },
+      { key: 'T', lower: 't', word: 'Tortuga 🐢', audioKey: 'let_t' },
     ],
   },
   {
-    key: 'E',
-    display: 'E',
-    pair: 'E / e',
-    title: 'Letra E Mayúscula y e Minúscula',
-    word: 'Estrella ⭐',
-    audioKey: 'let_e',
-    svgPath: 'M 280,80 L 120,80 L 120,320 L 280,320 M 120,200 L 250,200',
-    checkpoints: [
-      { id: 0, x: 270, y: 80, label: '1' },
-      { id: 1, x: 120, y: 80, label: '2' },
-      { id: 2, x: 120, y: 200, label: '3' },
-      { id: 3, x: 240, y: 200, label: '4' },
-      { id: 4, x: 120, y: 320, label: '5' },
-      { id: 5, x: 270, y: 320, label: '6' },
+    id: 3,
+    name: 'Nivel 3: Letras D, N, B, C, G, R',
+    letters: [
+      { key: 'D', lower: 'd', word: 'Delfín 🐬', audioKey: 'let_d' },
+      { key: 'N', lower: 'n', word: 'Nube ☁️', audioKey: 'let_n' },
+      { key: 'B', lower: 'b', word: 'Ballena 🐳', audioKey: 'let_b' },
+      { key: 'C', lower: 'c', word: 'Casa 🏠', audioKey: 'let_c' },
+      { key: 'G', lower: 'g', word: 'Gato 🐱', audioKey: 'let_g' },
+      { key: 'R', lower: 'r', word: 'Rosa 🌹', audioKey: 'let_r' },
     ],
   },
   {
-    key: 'I',
-    display: 'I i',
-    pair: 'I / i',
-    title: 'Letra I Mayúscula e i Minúscula',
-    word: 'Isla 🏝️',
-    audioKey: 'let_i',
-    svgPath: 'M 140,80 L 260,80 M 200,80 L 200,320 M 140,320 L 260,320',
-    checkpoints: [
-      { id: 0, x: 200, y: 80, label: '1' },
-      { id: 1, x: 200, y: 160, label: '2' },
-      { id: 2, x: 200, y: 240, label: '3' },
-      { id: 3, x: 200, y: 320, label: '4' },
+    id: 4,
+    name: 'Nivel 4: Letras F, J, V, Z, Ñ, Y',
+    letters: [
+      { key: 'F', lower: 'f', word: 'Flor 🌸', audioKey: 'let_f' },
+      { key: 'J', lower: 'j', word: 'Jirafa 🦒', audioKey: 'let_j' },
+      { key: 'V', lower: 'v', word: 'Vaca 🐮', audioKey: 'let_v' },
+      { key: 'Z', lower: 'z', word: 'Zapato 👟', audioKey: 'let_z' },
+      { key: 'Ñ', lower: 'ñ', word: 'Ñandú 🐦', audioKey: 'let_ny' },
+      { key: 'Y', lower: 'y', word: 'Yoyo 🪀', audioKey: 'let_y' },
     ],
   },
   {
-    key: 'O',
-    display: 'O o',
-    pair: 'O / o',
-    title: 'Letra O Mayúscula y o Minúscula',
-    word: 'Osito 🧸',
-    audioKey: 'let_o',
-    svgPath: 'M 200,75 A 120,120 0 1,0 200,325 A 120,120 0 1,0 200,75',
-    checkpoints: [
-      { id: 0, x: 200, y: 75, label: '1' },
-      { id: 1, x: 80, y: 200, label: '2' },
-      { id: 2, x: 200, y: 325, label: '3' },
-      { id: 3, x: 320, y: 200, label: '4' },
+    id: 5,
+    name: 'Nivel 5: Letras H, K, Q, W, X',
+    letters: [
+      { key: 'H', lower: 'h', word: 'Hada 🧚‍♀️', audioKey: 'let_h' },
+      { key: 'K', lower: 'k', word: 'Koala 🐨', audioKey: 'let_k' },
+      { key: 'Q', lower: 'q', word: 'Queso 🧀', audioKey: 'let_q' },
+      { key: 'W', lower: 'w', word: 'Wafle 🧇', audioKey: 'let_w' },
+      { key: 'X', lower: 'x', word: 'Xilófono 🎼', audioKey: 'let_x' },
     ],
   },
   {
-    key: 'U',
-    display: 'U u',
-    pair: 'U / u',
-    title: 'Letra U Mayúscula y u Minúscula',
-    word: 'Unicornio 🦄',
-    audioKey: 'let_u',
-    svgPath: 'M 110,80 L 110,230 A 90,90 0 0,0 290,230 L 290,80',
-    checkpoints: [
-      { id: 0, x: 110, y: 90, label: '1' },
-      { id: 1, x: 110, y: 220, label: '2' },
-      { id: 2, x: 200, y: 315, label: '3' },
-      { id: 3, x: 290, y: 220, label: '4' },
-      { id: 4, x: 290, y: 90, label: '5' },
-    ],
-  },
-  {
-    key: 'M',
-    display: 'M m',
-    pair: 'M / m',
-    title: 'Consonante M Mayúscula y m Minúscula',
-    word: 'Mamá 👩',
-    audioKey: 'let_m',
-    svgPath: 'M 80,320 L 80,80 L 200,220 L 320,80 L 320,320',
-    checkpoints: [
-      { id: 0, x: 80, y: 310, label: '1' },
-      { id: 1, x: 80, y: 90, label: '2' },
-      { id: 2, x: 200, y: 220, label: '3' },
-      { id: 3, x: 320, y: 90, label: '4' },
-      { id: 4, x: 320, y: 310, label: '5' },
-    ],
-  },
-  {
-    key: 'P',
-    display: 'P p',
-    pair: 'P / p',
-    title: 'Consonante P Mayúscula y p Minúscula',
-    word: 'Papá 👨',
-    audioKey: 'let_p',
-    svgPath: 'M 130,320 L 130,80 L 230,80 A 60,60 0 0,1 230,200 L 130,200',
-    checkpoints: [
-      { id: 0, x: 130, y: 310, label: '1' },
-      { id: 1, x: 130, y: 90, label: '2' },
-      { id: 2, x: 245, y: 95, label: '3' },
-      { id: 3, x: 270, y: 150, label: '4' },
-      { id: 4, x: 160, y: 200, label: '5' },
-    ],
-  },
-  {
-    key: 'S',
-    display: 'S s',
-    pair: 'S / s',
-    title: 'Consonante S Mayúscula y s Minúscula',
-    word: 'Sol ☀️',
-    audioKey: 'let_s',
-    svgPath: 'M 270,110 C 200,50 110,90 130,160 C 150,220 280,210 270,290 C 260,340 150,340 120,290',
-    checkpoints: [
-      { id: 0, x: 260, y: 105, label: '1' },
-      { id: 1, x: 130, y: 135, label: '2' },
-      { id: 2, x: 200, y: 205, label: '3' },
-      { id: 3, x: 265, y: 275, label: '4' },
-      { id: 4, x: 135, y: 300, label: '5' },
-    ],
-  },
-  {
-    key: 'L',
-    display: 'L l',
-    pair: 'L / l',
-    title: 'Consonante L Mayúscula y l Minúscula',
-    word: 'Luna 🌙',
-    audioKey: 'let_l',
-    svgPath: 'M 130,80 L 130,320 L 290,320',
-    checkpoints: [
-      { id: 0, x: 130, y: 90, label: '1' },
-      { id: 1, x: 130, y: 200, label: '2' },
-      { id: 2, x: 130, y: 320, label: '3' },
-      { id: 3, x: 280, y: 320, label: '4' },
+    id: 6,
+    name: 'Nivel 6: Sílabas (MA, PE, SI, LO, TU...)',
+    letters: [
+      { key: 'MA', lower: 'ma', word: 'Mamá 👩', audioKey: 'syl_ma' },
+      { key: 'PE', lower: 'pe', word: 'Pelota ⚽', audioKey: 'syl_pe' },
+      { key: 'SI', lower: 'si', word: 'Sirena 🧜‍♀️', audioKey: 'syl_si' },
+      { key: 'LO', lower: 'lo', word: 'Lobo 🐺', audioKey: 'syl_lo' },
+      { key: 'TU', lower: 'tu', word: 'Tulipán 🌷', audioKey: 'syl_tu' },
+      { key: 'DA', lower: 'da', word: 'Dado 🎲', audioKey: 'syl_da' },
+      { key: 'NO', lower: 'no', word: 'Noche 🌌', audioKey: 'syl_no' },
+      { key: 'CA', lower: 'ca', word: 'Casa 🏠', audioKey: 'syl_ca' },
+      { key: 'GA', lower: 'ga', word: 'Gato 🐱', audioKey: 'syl_ga' },
+      { key: 'RO', lower: 'ro', word: 'Rosa 🌹', audioKey: 'syl_ro' },
     ],
   },
 ];
 
+// Puntos de control de trazo adaptados si es 1 letra o 2 letras (sílaba)
+function getCheckpointsForText(displayStr) {
+  if (displayStr.length > 1) {
+    return [
+      { id: 0, x: 110, y: 120, label: '1' },
+      { id: 1, x: 110, y: 270, label: '2' },
+      { id: 2, x: 200, y: 200, label: '3' },
+      { id: 3, x: 290, y: 120, label: '4' },
+      { id: 4, x: 290, y: 270, label: '5' },
+    ];
+  }
+  return [
+    { id: 0, x: 200, y: 95, label: '1' },
+    { id: 1, x: 135, y: 195, label: '2' },
+    { id: 2, x: 265, y: 195, label: '3' },
+    { id: 3, x: 200, y: 295, label: '4' },
+  ];
+}
+
 export default function MinijuegoTrazos({ onReturnToMap }) {
-  const { audioManager, registrarAcierto, navegarA } = useGame();
+  const { audioManager, registrarAcierto, sumarOvillos, desbloquearNivel, navegarA } = useGame();
 
   const canvasRef = useRef(null);
+  const timersRef = useRef([]);
+
+  const [levelIdx, setLevelIdx] = useState(0);
   const [letterIdx, setLetterIdx] = useState(0);
+  // caseMode: 'upper' (Mayúscula) | 'lower' (Minúscula) | 'both' (Mayúscula y Minúscula juntas)
+  const [caseMode, setCaseMode] = useState('upper');
   const [isDrawing, setIsDrawing] = useState(false);
   const [visitedCheckpoints, setVisitedCheckpoints] = useState([]);
-  const [completedLetters, setCompletedLetters] = useState([]);
+  const [completedItems, setCompletedItems] = useState([]);
   const [particles, setParticles] = useState([]);
-  const [hasWon, setHasWon] = useState(false);
+  const [levelModal, setLevelModal] = useState(false);
+  const [hasWonAll, setHasWonAll] = useState(false);
 
-  const currentLetter = TRACE_LETTERS[letterIdx];
+  const currentLevel = TRACE_LEVELS[levelIdx];
+  const currentLetter = currentLevel.letters[letterIdx] || currentLevel.letters[0];
+
+  const displayString =
+    caseMode === 'upper'
+      ? currentLetter.key
+      : caseMode === 'lower'
+      ? currentLetter.lower
+      : `${currentLetter.key}${currentLetter.lower}`;
+
+  const checkpoints = getCheckpointsForText(displayString);
+
+  const clearTimers = () => {
+    timersRef.current.forEach((t) => clearTimeout(t));
+    timersRef.current = [];
+  };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      audioManager.playVoice('trace_welcome');
-    }, 350);
-    return () => clearTimeout(timer);
-  }, [audioManager]);
+    const t = setTimeout(() => {
+      audioManager.playVoice(currentLetter.audioKey);
+    }, 300);
+    timersRef.current.push(t);
+    return () => clearTimers();
+  }, [levelIdx, letterIdx, caseMode, audioManager, currentLetter.audioKey]);
 
   const clearCanvasOnly = () => {
     setVisitedCheckpoints([]);
@@ -197,10 +159,10 @@ export default function MinijuegoTrazos({ onReturnToMap }) {
   };
 
   const handleSelectLetterIdx = (idx) => {
+    clearTimers();
     setLetterIdx(idx);
     clearCanvasOnly();
     audioManager.playSFX('bubble');
-    audioManager.playVoice(TRACE_LETTERS[idx].audioKey);
   };
 
   const handleReset = () => {
@@ -222,35 +184,35 @@ export default function MinijuegoTrazos({ onReturnToMap }) {
   };
 
   const spawnStarParticles = (x, y) => {
-    const newStars = Array.from({ length: 3 }).map(() => ({
+    const newStars = Array.from({ length: 2 }).map(() => ({
       id: Math.random(),
       x: x + (Math.random() - 0.5) * 28,
       y: y + (Math.random() - 0.5) * 28,
       size: Math.random() * 10 + 8,
     }));
-    setParticles((prev) => [...prev.slice(-20), ...newStars]);
+    setParticles((prev) => [...prev.slice(-16), ...newStars]);
   };
 
   const handlePointerDown = (e) => {
-    if (hasWon) return;
+    if (hasWonAll || levelModal) return;
     setIsDrawing(true);
     const { x, y } = getCoordinates(e);
     checkProximity(x, y);
   };
 
   const handlePointerMove = (e) => {
-    if (!isDrawing || hasWon) return;
+    if (!isDrawing || hasWonAll || levelModal) return;
     const { x, y } = getCoordinates(e);
 
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext('2d');
       ctx.strokeStyle = '#EC4899';
-      ctx.lineWidth = 16;
+      ctx.lineWidth = 18;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.shadowColor = '#FBBF24';
-      ctx.shadowBlur = 12;
+      ctx.shadowBlur = 10;
 
       ctx.lineTo(x, y);
       ctx.stroke();
@@ -272,15 +234,15 @@ export default function MinijuegoTrazos({ onReturnToMap }) {
   };
 
   const checkProximity = (x, y) => {
-    currentLetter.checkpoints.forEach((cp) => {
+    checkpoints.forEach((cp) => {
       if (!visitedCheckpoints.includes(cp.id)) {
         const dist = Math.hypot(cp.x - x, cp.y - y);
-        if (dist < 48) {
+        if (dist < 58) {
           audioManager.playSFX('sparkle');
           const nextVisited = [...visitedCheckpoints, cp.id];
           setVisitedCheckpoints(nextVisited);
 
-          if (nextVisited.length === currentLetter.checkpoints.length) {
+          if (nextVisited.length === checkpoints.length) {
             handleLetterCompleted();
           }
         }
@@ -288,115 +250,189 @@ export default function MinijuegoTrazos({ onReturnToMap }) {
     });
   };
 
+  const advanceNext = () => {
+    clearTimers();
+    clearCanvasOnly();
+    // Si está en mayúscula, pasar automáticamente a la minúscula de la misma letra para practicar ambas
+    if (caseMode === 'upper') {
+      setCaseMode('lower');
+      return;
+    }
+    // Si ya trazó la minúscula, pasar a la siguiente letra del nivel en mayúscula
+    if (letterIdx + 1 < currentLevel.letters.length) {
+      setCaseMode('upper');
+      setLetterIdx((prev) => prev + 1);
+    } else {
+      sumarOvillos(2);
+      desbloquearNivel('mision5');
+      if (levelIdx + 1 < TRACE_LEVELS.length) {
+        setLevelModal(true);
+      } else {
+        setHasWonAll(true);
+      }
+    }
+  };
+
   const handleLetterCompleted = () => {
+    clearTimers();
     audioManager.playSFX('bell');
     audioManager.playSFX('celebration');
     audioManager.playVoice('trace_win');
-    registrarAcierto(currentLetter.key);
+    registrarAcierto(displayString);
 
-    const nextCompleted = completedLetters.includes(currentLetter.key)
-      ? completedLetters
-      : [...completedLetters, currentLetter.key];
-    setCompletedLetters(nextCompleted);
+    const badgeId = `${currentLetter.key}-${caseMode}`;
+    if (!completedItems.includes(badgeId)) {
+      setCompletedItems((prev) => [...prev, badgeId]);
+    }
 
-    setTimeout(() => {
-      if (letterIdx + 1 < TRACE_LETTERS.length && nextCompleted.length < 3) {
-        handleSelectLetterIdx(letterIdx + 1);
-      } else if (nextCompleted.length >= 3 && !hasWon) {
-        setHasWon(true);
-      }
-    }, 1500);
+    const t = setTimeout(() => {
+      advanceNext();
+    }, 1600);
+    timersRef.current.push(t);
   };
 
   return (
-    <div className="relative w-full min-h-[92vh] flex flex-col justify-between p-3 sm:p-5 overflow-hidden bg-gradient-to-b from-purple-100/90 via-pink-100/80 to-blue-100/90 select-none">
+    <div className="relative w-full min-h-[92vh] flex flex-col justify-between p-2.5 sm:p-5 overflow-hidden bg-gradient-to-b from-purple-100/90 via-pink-100/80 to-blue-100/90 select-none">
       {/* HEADER */}
-      <header className="z-20 w-full max-w-4xl mx-auto flex items-center justify-between gap-2">
+      <header className="z-20 w-full max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
         <button
+          type="button"
           onClick={() => {
+            clearTimers();
+            audioManager.stopVoice();
             audioManager.playSFX('bubble');
             if (onReturnToMap) onReturnToMap();
             else navegarA('map');
           }}
-          className="flex items-center gap-1.5 px-3 py-2 bg-white/90 rounded-2xl border-2 border-pink-200 text-purple-700 font-extrabold text-xs sm:text-sm shadow-sm hover:scale-105 transition-all"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-white/90 rounded-2xl border-2 border-pink-200 text-purple-700 font-extrabold text-xs sm:text-sm shadow-sm hover:scale-105 transition-all"
         >
           <ArrowLeft className="w-4 h-4 text-pink-600" />
           <span>Mapa</span>
         </button>
 
-        <div className="text-center">
-          <div className="inline-flex items-center gap-1.5 px-4 py-1 bg-white/90 rounded-full border border-pink-300 shadow-sm">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <h1 className="text-xs sm:text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-700">
-              Trazos Mágicos: {currentLetter.title} ({currentLetter.word})
-            </h1>
-          </div>
+        {/* Selector de los 6 Niveles de Trazos */}
+        <div className="flex flex-wrap items-center justify-center gap-1 bg-white/85 px-2.5 py-1 rounded-2xl border border-pink-200 shadow-sm">
+          {TRACE_LEVELS.map((lvl, idx) => (
+            <button
+              key={lvl.id}
+              type="button"
+              onClick={() => {
+                clearTimers();
+                setLevelIdx(idx);
+                setLetterIdx(0);
+                setCaseMode('upper');
+                clearCanvasOnly();
+                setLevelModal(false);
+              }}
+              className={`px-2.5 py-1 rounded-xl font-black text-[11px] sm:text-xs transition-all cursor-pointer ${
+                idx === levelIdx
+                  ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-sm scale-105'
+                  : 'bg-pink-50 text-purple-800 hover:bg-pink-100'
+              }`}
+            >
+              {lvl.name}
+            </button>
+          ))}
         </div>
 
-        <button
-          onClick={handleReset}
-          className="flex items-center gap-1.5 px-3 py-2 bg-white/90 rounded-2xl border-2 border-pink-200 text-purple-700 font-extrabold text-xs sm:text-sm shadow-sm hover:scale-105 transition-all"
-        >
-          <RotateCcw className="w-4 h-4 text-pink-600" />
-          <span>Borrar</span>
-        </button>
+        {/* Selector Mayúscula / Minúscula / Ambas */}
+        <div className="flex items-center gap-1 bg-white/90 p-1 rounded-2xl border border-purple-200 shadow-sm">
+          {[
+            { id: 'upper', label: `Mayúscula (${currentLetter.key})` },
+            { id: 'lower', label: `minúscula (${currentLetter.lower})` },
+            { id: 'both', label: `${currentLetter.key}${currentLetter.lower}` },
+          ].map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => {
+                clearTimers();
+                setCaseMode(m.id);
+                clearCanvasOnly();
+              }}
+              className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                caseMode === m.id
+                  ? 'bg-purple-600 text-white shadow-sm'
+                  : 'text-purple-700 hover:bg-purple-50'
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
       </header>
 
-      {/* SELECTOR DE LETRAS PARA TRAZAR (MAYÚSCULAS Y MINÚSCULAS) */}
-      <div className="z-20 w-full max-w-3xl mx-auto my-1 flex flex-wrap items-center justify-center gap-1.5">
-        {TRACE_LETTERS.map((item, idx) => {
+      {/* SELECTOR DE LETRAS DEL NIVEL ACTUAL */}
+      <div className="z-20 w-full max-w-4xl mx-auto my-1 flex flex-wrap items-center justify-center gap-1.5">
+        {currentLevel.letters.map((item, idx) => {
           const isCurrent = idx === letterIdx;
-          const isDone = completedLetters.includes(item.key);
+          const isDone =
+            completedItems.includes(`${item.key}-upper`) ||
+            completedItems.includes(`${item.key}-lower`);
           return (
             <button
               key={item.key}
+              type="button"
               onClick={() => handleSelectLetterIdx(idx)}
-              className={`px-3 py-1 rounded-xl font-black text-xs sm:text-sm border-2 flex items-center gap-1 transition-all ${
+              className={`px-3 py-1 rounded-xl font-black text-xs sm:text-sm border-2 flex items-center gap-1 transition-all cursor-pointer ${
                 isCurrent
                   ? 'bg-pink-500 text-white border-yellow-300 scale-110 shadow-md'
                   : isDone
                   ? 'bg-emerald-400 text-white border-white'
-                  : 'bg-white/80 text-purple-800 border-pink-200'
+                  : 'bg-white/85 text-purple-800 border-pink-200'
               }`}
             >
-              <span>{item.pair}</span>
+              <span>
+                {item.key} / {item.lower}
+              </span>
               {isDone && <CheckCircle2 className="w-3.5 h-3.5" />}
             </button>
           );
         })}
       </div>
 
-      {/* ÁREA DE JUEGO: CANVAS TÁCTIL */}
+      {/* ÁREA DE JUEGO: CANVAS TÁCTIL CON GUÍA DE MAYÚSCULA Y MINÚSCULA */}
       <main className="z-10 w-full max-w-lg mx-auto my-auto flex flex-col items-center">
-        <div className="relative w-[330px] h-[340px] sm:w-[380px] sm:h-[380px] bg-white/95 rounded-3xl border-4 border-pink-300 shadow-2xl p-2 flex items-center justify-center overflow-hidden touch-none">
+        <div className="mb-1.5 flex items-center gap-2 bg-white/90 px-4 py-1 rounded-full border border-pink-200 shadow-sm">
+          <Sparkles className="w-4 h-4 text-amber-500" />
+          <span className="text-xs sm:text-sm font-black text-purple-800">
+            Traza: <strong className="text-pink-600 text-base">{displayString}</strong> • Como en {currentLetter.word}
+          </span>
+        </div>
+
+        <div className="relative w-[320px] h-[320px] sm:w-[370px] sm:h-[370px] bg-white/95 rounded-3xl border-4 border-pink-300 shadow-2xl p-2 flex items-center justify-center overflow-hidden touch-none">
           <svg
             viewBox="0 0 400 400"
-            className="absolute inset-0 w-full h-full pointer-events-none"
+            className="absolute inset-0 w-full h-full pointer-events-none select-none"
           >
-            <path
-              d={currentLetter.svgPath}
-              fill="none"
-              stroke="#FCE7F3"
-              strokeWidth="44"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d={currentLetter.svgPath}
-              fill="none"
-              stroke="#F472B6"
-              strokeWidth="6"
-              strokeDasharray="12,12"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+            {/* Renglones de caligrafía escolar */}
+            <line x1="30" y1="90" x2="370" y2="90" stroke="#E2E8F0" strokeWidth="2" strokeDasharray="6,6" />
+            <line x1="30" y1="200" x2="370" y2="200" stroke="#FBCFE8" strokeWidth="2" strokeDasharray="6,6" />
+            <line x1="30" y1="310" x2="370" y2="310" stroke="#CBD5E1" strokeWidth="3" />
 
-            {currentLetter.checkpoints.map((cp) => {
+            {/* Silueta gigante de la letra/sílaba en Mayúscula o Minúscula para calcar */}
+            <text
+              x="200"
+              y="285"
+              textAnchor="middle"
+              fontSize={displayString.length > 1 ? '175' : '250'}
+              fontFamily="Nunito, Quicksand, sans-serif"
+              fontWeight="900"
+              fill="#FCE7F3"
+              stroke="#F472B6"
+              strokeWidth="4"
+              strokeDasharray="10,10"
+            >
+              {displayString}
+            </text>
+
+            {/* Puntos guía numerados */}
+            {checkpoints.map((cp) => {
               const isPassed = visitedCheckpoints.includes(cp.id);
               return (
                 <g key={cp.id} transform={`translate(${cp.x}, ${cp.y})`}>
                   <circle
-                    r={isPassed ? 17 : 15}
+                    r={isPassed ? 18 : 16}
                     fill={isPassed ? '#10B981' : '#FBBF24'}
                     stroke="#FFFFFF"
                     strokeWidth="3"
@@ -406,7 +442,7 @@ export default function MinijuegoTrazos({ onReturnToMap }) {
                       textAnchor="middle"
                       dy="5"
                       fill="#FFFFFF"
-                      fontSize="13"
+                      fontSize="14"
                       fontWeight="900"
                     >
                       {cp.label}
@@ -448,54 +484,111 @@ export default function MinijuegoTrazos({ onReturnToMap }) {
           </div>
         </div>
 
-        {/* Barra de progreso */}
-        <div className="mt-2 w-full max-w-xs flex items-center justify-between gap-2 bg-white/85 px-4 py-1.5 rounded-2xl border border-pink-200">
-          <span className="text-xs font-black text-purple-700">Trazo:</span>
-          <div className="flex-1 h-2.5 bg-pink-100 rounded-full overflow-hidden">
+        {/* Controles debajo del lienzo */}
+        <div className="mt-2 w-full max-w-sm flex items-center justify-between gap-2">
+          <button
+            type="button"
+            onClick={handleReset}
+            className="flex items-center gap-1 px-3 py-1.5 bg-white/90 rounded-xl border border-pink-200 text-xs font-black text-purple-700 shadow-sm"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-pink-600" />
+            <span>Borrar</span>
+          </button>
+
+          <div className="flex-1 h-2.5 bg-pink-100 rounded-full overflow-hidden border border-pink-200">
             <div
               className="h-full bg-gradient-to-r from-pink-500 to-amber-400 transition-all duration-300"
               style={{
                 width: `${Math.round(
-                  (visitedCheckpoints.length /
-                    currentLetter.checkpoints.length) *
-                    100
+                  (visitedCheckpoints.length / checkpoints.length) * 100
                 )}%`,
               }}
             />
           </div>
-          <span className="text-xs font-black text-pink-600">
-            {Math.round(
-              (visitedCheckpoints.length / currentLetter.checkpoints.length) *
-                100
-            )}
-            %
-          </span>
+
+          <button
+            type="button"
+            onClick={advanceNext}
+            className="flex items-center gap-1 px-3 py-1.5 bg-emerald-500 text-white rounded-xl text-xs font-black shadow-sm"
+          >
+            <span>Siguiente</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       </main>
 
       {/* FOOTER */}
-      <footer className="z-20 w-full max-w-4xl mx-auto flex items-center justify-between">
+      <footer className="z-20 w-full max-w-4xl mx-auto flex items-center justify-between mt-1">
         <button
+          type="button"
           onClick={() => audioManager.playVoice(currentLetter.audioKey)}
-          className="flex items-center gap-1.5 bg-white/90 hover:bg-white border border-pink-300 px-3 py-1.5 rounded-2xl text-xs font-black text-pink-700 shadow-sm"
+          className="flex items-center gap-1.5 bg-white/90 hover:bg-white border border-pink-300 px-3.5 py-1.5 rounded-2xl text-xs font-black text-pink-700 shadow-sm"
         >
           <Volume2 className="w-4 h-4 text-pink-600 animate-pulse" />
-          <span>Escuchar letra {currentLetter.pair}</span>
+          <span>
+            Escuchar {currentLetter.key} / {currentLetter.lower} ({currentLetter.word})
+          </span>
         </button>
 
         <span className="text-xs font-extrabold text-purple-700">
-          🧚‍♀️ Pasa tu dedito por los puntos numerados
+          🧚‍♀️ Traza la Mayúscula y luego su minúscula
         </span>
       </footer>
 
-      {hasWon && (
+      {/* MODAL ENTRE NIVELES */}
+      {levelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/60 backdrop-blur-md">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center border-4 border-pink-300 shadow-2xl">
+            <img
+              src="/fairy-mimi.jpg"
+              alt="Hadita Mimi"
+              className="w-28 h-28 mx-auto rounded-full border-4 border-amber-300 object-cover shadow-lg mb-3"
+            />
+            <h2 className="text-2xl font-black text-purple-800 mb-1">
+              ¡Completaste el {currentLevel.name}! ✍️✨
+            </h2>
+            <p className="text-sm font-bold text-slate-600 mb-5">
+              ¡Qué hermoso dibujas las letras mayúsculas y minúsculas, Cristal!
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setLevelModal(false);
+                  setLevelIdx((prev) => prev + 1);
+                  setLetterIdx(0);
+                  setCaseMode('upper');
+                  clearCanvasOnly();
+                }}
+                className="w-full py-3.5 rounded-2xl font-black text-lg text-white bg-gradient-to-r from-emerald-500 to-teal-500 shadow-lg flex items-center justify-center gap-2"
+              >
+                <span>¡Ir al {TRACE_LEVELS[levelIdx + 1]?.name}!</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setLevelModal(false);
+                  if (onReturnToMap) onReturnToMap();
+                  else navegarA('map');
+                }}
+                className="w-full py-2.5 rounded-2xl font-bold text-sm text-purple-700 bg-purple-100 hover:bg-purple-200"
+              >
+                Volver al Mapa Mágico
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {hasWonAll && (
         <VictoryModal
-          title="¡Artista de las Letras!"
-          subtitle="¡Qué hermoso dibujas las letras mayúsculas y minúsculas, Cristal!"
-          levelIdToUnlock="mision2"
-          yarnReward={2}
+          title="¡Artista de Todo el Abecedario!"
+          subtitle="¡Trazaste todas las letras mayúsculas, minúsculas y sílabas, Cristal!"
+          levelIdToUnlock="mision5"
+          yarnReward={3}
           onReturnToMap={() => {
-            setHasWon(false);
+            setHasWonAll(false);
             if (onReturnToMap) onReturnToMap();
             else navegarA('map');
           }}

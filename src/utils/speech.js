@@ -162,7 +162,7 @@ export const AUDIO_MANIFEST = {
   'syl_ya': '/audio/syl_ya.mp3', 'syl_ye': '/audio/syl_ye.mp3', 'syl_yi': '/audio/syl_yi.mp3', 'syl_yo': '/audio/syl_yo.mp3', 'syl_yu': '/audio/syl_yu.mp3',
   'syl_nya': '/audio/syl_nya.mp3', 'syl_nye': '/audio/syl_nye.mp3', 'syl_nyi': '/audio/syl_nyi.mp3', 'syl_nyo': '/audio/syl_nyo.mp3', 'syl_nyu': '/audio/syl_nyu.mp3',
 
-  // Palabras completas
+  // Palabras completas (2, 3 y 4 sílabas)
   'word_mesa': '/audio/word_mesa.mp3',
   'word_mama': '/audio/word_mama.mp3',
   'word_papa': '/audio/word_papa.mp3',
@@ -174,6 +174,29 @@ export const AUDIO_MANIFEST = {
   'word_uva': '/audio/word_uva.mp3',
   'word_mano': '/audio/word_mano.mp3',
   'word_pato': '/audio/word_pato.mp3',
+  'word_dado': '/audio/word_dado.mp3',
+  'word_nube': '/audio/word_nube.mp3',
+  'word_bota': '/audio/word_bota.mp3',
+  'word_foca': '/audio/word_foca.mp3',
+  'word_rosa': '/audio/word_rosa.mp3',
+  'word_vaca': '/audio/word_vaca.mp3',
+  'word_vela': '/audio/word_vela.mp3',
+  'word_pelota': '/audio/word_pelota.mp3',
+  'word_paloma': '/audio/word_paloma.mp3',
+  'word_camisa': '/audio/word_camisa.mp3',
+  'word_maleta': '/audio/word_maleta.mp3',
+  'word_tomate': '/audio/word_tomate.mp3',
+  'word_zapato': '/audio/word_zapato.mp3',
+  'word_conejo': '/audio/word_conejo.mp3',
+  'word_jirafa': '/audio/word_jirafa.mp3',
+  'word_ballena': '/audio/word_ballena.mp3',
+  'word_corona': '/audio/word_corona.mp3',
+  'word_mariposa': '/audio/word_mariposa.mp3',
+  'word_elefante': '/audio/word_elefante.mp3',
+  'word_caramelo': '/audio/word_caramelo.mp3',
+  'word_bicicleta': '/audio/word_bicicleta.mp3',
+  'word_chocolate': '/audio/word_chocolate.mp3',
+  'word_tortuga': '/audio/word_tortuga.mp3',
 };
 
 /**

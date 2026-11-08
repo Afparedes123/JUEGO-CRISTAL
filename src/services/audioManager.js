@@ -172,13 +172,17 @@ class GlobalAudioManager {
 
   // ==========================================================================
   // 2. PLAYVOICE: Gestión estricta de voces dirigidas a Cristal
-  // DETIENE inmediatamente cualquier audio o voz en curso antes de sonar.
+  // DETIENE inmediatamente cualquier audio o voz en curso antes de sonar
+  // usando un único reproductor compartido y token de secuencia.
   // ==========================================================================
   playVoice(audioIdOrText, options = {}) {
     // REGLA CRUCIAL: Detener cualquier voz anterior de inmediato
     this.stopVoice();
 
     if (!audioIdOrText) return;
+
+    this.voiceRequestId = (this.voiceRequestId || 0) + 1;
+    const reqId = this.voiceRequestId;
 
     // 1. Resolver archivo de audio pregrabado (MP3 latino de alta fidelidad)
     let audioUrl = null;
@@ -195,11 +199,20 @@ class GlobalAudioManager {
     // Si encontramos el archivo MP3 dedicado
     if (audioUrl) {
       try {
-        const audio = new Audio(audioUrl);
-        this.currentVoiceAudio = audio;
+        if (!this.sharedVoiceEl && typeof Audio !== 'undefined') {
+          this.sharedVoiceEl = new Audio();
+        }
+        const audio = this.sharedVoiceEl;
+        if (!audio) return;
+
+        audio.pause();
+        audio.src = audioUrl;
+        audio.currentTime = 0;
         audio.volume = options.volume ?? this.voiceVolume;
+        this.currentVoiceAudio = audio;
 
         audio.onended = () => {
+          if (this.voiceRequestId !== reqId) return;
           this.isVoiceSpeaking = false;
           this.currentVoiceAudio = null;
           this.notify({ isVoiceSpeaking: false });
@@ -207,19 +220,22 @@ class GlobalAudioManager {
         };
 
         audio.onerror = (err) => {
+          if (this.voiceRequestId !== reqId) return;
           console.warn('Error cargando MP3 de voz, pasando a síntesis como respaldo:', err);
           this.currentVoiceAudio = null;
-          this.playVoiceSynthesisFallback(audioIdOrText, options);
+          this.playVoiceSynthesisFallback(audioIdOrText, options, reqId);
         };
 
         const playPromise = audio.play();
         if (playPromise !== undefined) {
           playPromise.catch((err) => {
+            if (this.voiceRequestId !== reqId) return;
+            // Ignorar AbortError cuando se interrumpe rápidamente por una nueva acción
+            if (err && err.name === 'AbortError') return;
             console.warn('Audio play bloqueado por política de autoplay del navegador:', err);
             this.currentVoiceAudio = null;
             this.isVoiceSpeaking = false;
             this.notify({ isVoiceSpeaking: false });
-            // Si el usuario aún no interactuó, guardar para reproducir con el MP3 real al primer clic/toque
             if (!this.hasUserInteracted) {
               this.pendingVoice = { audioIdOrText, options };
             }
@@ -232,22 +248,35 @@ class GlobalAudioManager {
     }
 
     // 2. Respaldo por Web Speech API si no se encuentra archivo MP3
-    this.playVoiceSynthesisFallback(audioIdOrText, options);
+    this.playVoiceSynthesisFallback(audioIdOrText, options, reqId);
   }
 
   // Detiene completamente la voz actual sin solapamientos
   stopVoice() {
-    if (this.currentVoiceAudio) {
+    this.voiceRequestId = (this.voiceRequestId || 0) + 1;
+
+    if (this.sharedVoiceEl) {
       try {
-        this.currentVoiceAudio.pause();
-        this.currentVoiceAudio.currentTime = 0;
-        this.currentVoiceAudio.onended = null;
-        this.currentVoiceAudio.onerror = null;
+        this.sharedVoiceEl.onended = null;
+        this.sharedVoiceEl.onerror = null;
+        this.sharedVoiceEl.pause();
+        this.sharedVoiceEl.currentTime = 0;
       } catch (e) {
         // Ignorar
       }
-      this.currentVoiceAudio = null;
     }
+
+    if (this.currentVoiceAudio && this.currentVoiceAudio !== this.sharedVoiceEl) {
+      try {
+        this.currentVoiceAudio.onended = null;
+        this.currentVoiceAudio.onerror = null;
+        this.currentVoiceAudio.pause();
+        this.currentVoiceAudio.currentTime = 0;
+      } catch (e) {
+        // Ignorar
+      }
+    }
+    this.currentVoiceAudio = null;
 
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       try {
@@ -262,7 +291,7 @@ class GlobalAudioManager {
   }
 
   // Respaldo sintético estricto (SOLO VOZ EN ESPAÑOL, NUNCA INGLÉS)
-  playVoiceSynthesisFallback(text, options = {}) {
+  playVoiceSynthesisFallback(text, options = {}, reqId = null) {
     if (typeof window === 'undefined' || !window.speechSynthesis) {
       if (options.onEnd) options.onEnd();
       return;
