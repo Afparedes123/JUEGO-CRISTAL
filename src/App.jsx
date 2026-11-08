@@ -1,106 +1,106 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { GameProvider, useGame } from './context/GameContext';
+import SplashScreen from './components/SplashScreen';
 import HeaderNav from './components/HeaderNav';
-import HomeScreen from './components/HomeScreen';
 import Level1Vowels from './components/Level1Vowels';
 import Level2FeedKitty from './components/Level2FeedKitty';
 import Level3CloudJumps from './components/Level3CloudJumps';
 import Level4PartyBoxes from './components/Level4PartyBoxes';
 import { Sparkles, Heart } from 'lucide-react';
 
-function App() {
-  const [currentScreen, setCurrentScreen] = useState('home');
-  const [level2Unlocked, setLevel2Unlocked] = useState(false);
-  const [level3Unlocked, setLevel3Unlocked] = useState(false);
-  const [level4Unlocked, setLevel4Unlocked] = useState(false);
+function GameContent() {
+  const {
+    currentScreen,
+    navegarA,
+    desbloquearNivel,
+    isNivelDesbloqueado,
+    registrarAcierto,
+    sumarOvillos
+  } = useGame();
 
-  const handleStartGame = () => {
-    setCurrentScreen('level1');
-  };
-
+  // Flujo de niveles
   const handleLevel1Complete = () => {
-    setLevel2Unlocked(true);
-  };
-
-  const handleGoToLevel2 = () => {
-    setLevel2Unlocked(true);
-    setCurrentScreen('level2');
+    desbloquearNivel('mision2');
+    sumarOvillos(3);
   };
 
   const handleLevel2Complete = () => {
-    setLevel3Unlocked(true);
-  };
-
-  const handleGoToLevel3 = () => {
-    setLevel3Unlocked(true);
-    setCurrentScreen('level3');
+    desbloquearNivel('mision3');
+    sumarOvillos(3);
   };
 
   const handleLevel3Complete = () => {
-    setLevel4Unlocked(true);
-  };
-
-  const handleGoToLevel4 = () => {
-    setLevel4Unlocked(true);
-    setCurrentScreen('level4');
+    desbloquearNivel('mision4');
+    sumarOvillos(5);
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-purple-100/70 via-pink-50/50 to-blue-50/70 text-slate-800">
-      {/* Top Navigation Bar */}
-      <HeaderNav
-        currentScreen={currentScreen}
-        onNavigate={(screen) => setCurrentScreen(screen)}
-        level2Unlocked={level2Unlocked}
-        level3Unlocked={level3Unlocked}
-        level4Unlocked={level4Unlocked}
-      />
+      {/* Barra superior de navegación (solo visible fuera del splash para máxima inmersión) */}
+      {currentScreen !== 'splash' && (
+        <HeaderNav
+          currentScreen={currentScreen}
+          onNavigate={(screen) => navegarA(screen)}
+          level2Unlocked={isNivelDesbloqueado('mision2')}
+          level3Unlocked={isNivelDesbloqueado('mision3')}
+          level4Unlocked={isNivelDesbloqueado('mision4')}
+        />
+      )}
 
-      {/* Main Content Area */}
+      {/* Pantalla Activa */}
       <main className="flex-1 flex flex-col justify-center w-full">
-        {currentScreen === 'home' && (
-          <HomeScreen onStartGame={handleStartGame} />
+        {/* PANTALLA 1: SPLASH SCREEN (INICIO CON LAS 2 GATITAS Y BOTÓN LATIENTE) */}
+        {currentScreen === 'splash' && (
+          <SplashScreen onStartGame={() => navegarA('level1')} />
         )}
 
+        {/* NIVELES JUGABLES */}
         {currentScreen === 'level1' && (
-          <Level1Vowels 
+          <Level1Vowels
             onCompleteLevel={handleLevel1Complete}
-            onGoToLevel2={handleGoToLevel2}
+            onGoToLevel2={() => navegarA('level2')}
           />
         )}
 
         {currentScreen === 'level2' && (
           <Level2FeedKitty
             onCompleteLevel={handleLevel2Complete}
-            onGoToLevel3={handleGoToLevel3}
+            onGoToLevel3={() => navegarA('level3')}
           />
         )}
 
         {currentScreen === 'level3' && (
           <Level3CloudJumps
             onCompleteLevel={handleLevel3Complete}
-            onGoToLevel4={handleGoToLevel4}
+            onGoToLevel4={() => navegarA('level4')}
           />
         )}
 
         {currentScreen === 'level4' && (
-          <Level4PartyBoxes
-            onRestartAll={() => setCurrentScreen('home')}
-          />
+          <Level4PartyBoxes onRestartAll={() => navegarA('splash')} />
         )}
       </main>
 
-      {/* Footer with warm encouragement for Cristal */}
-      <footer className="w-full py-4 text-center text-xs font-semibold text-slate-500 bg-white/40 border-t border-pink-100">
-        <div className="flex items-center justify-center gap-1.5">
-          <span>Creado con amor para</span>
-          <span className="font-extrabold text-pink-600">Cristal</span>
-          <Heart className="w-3.5 h-3.5 fill-pink-500 text-pink-500" />
-          <span>• Aventuras de Gatitos Mágicos</span>
-          <Sparkles className="w-3.5 h-3.5 text-yellow-500" />
-        </div>
-      </footer>
+      {/* Pie de página con amor para Cristal */}
+      {currentScreen !== 'splash' && (
+        <footer className="w-full py-3 text-center text-xs font-semibold text-slate-500 bg-white/40 border-t border-pink-100">
+          <div className="flex items-center justify-center gap-1.5">
+            <span>Creado con amor para</span>
+            <span className="font-extrabold text-pink-600">Cristal</span>
+            <Heart className="w-3.5 h-3.5 fill-pink-500 text-pink-500" />
+            <span>• Aventuras de las Gatitas Mágicas Lulú y Mimi</span>
+            <Sparkles className="w-3.5 h-3.5 text-yellow-500" />
+          </div>
+        </footer>
+      )}
     </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <GameProvider>
+      <GameContent />
+    </GameProvider>
+  );
+}
