@@ -3,6 +3,9 @@ import { GameProvider, useGame } from './context/GameContext';
 import SplashScreen from './components/SplashScreen';
 import MapaMagico from './components/MapaMagico';
 import CasaGatitas from './components/CasaGatitas';
+import MinijuegoTrazos from './components/MinijuegoTrazos';
+import MinijuegoBurbujas from './components/MinijuegoBurbujas';
+import MinijuegoCaldero from './components/MinijuegoCaldero';
 import Level1Vowels from './components/Level1Vowels';
 import Level2FeedKitty from './components/Level2FeedKitty';
 import Level3CloudJumps from './components/Level3CloudJumps';
@@ -11,7 +14,7 @@ import Level4PartyBoxes from './components/Level4PartyBoxes';
 function GameRouter() {
   const { currentScreen, navegarA, desbloquearNivel, sumarOvillos } = useGame();
 
-  // Handlers de finalización de minijuegos
+  // Handlers de finalización con recompensa de ovillos y desbloqueo
   const handleLevel1Complete = () => {
     desbloquearNivel('mision2');
     sumarOvillos(3);
@@ -41,7 +44,22 @@ function GameRouter() {
         {/* PANTALLA 3: LA CASA DE LAS GATITAS (CUARTO DE RECOMPENSAS) */}
         {currentScreen === 'kittens_house' && <CasaGatitas />}
 
-        {/* MINIJUEGO 1: VOCALES (ATRAPA LA VOCAL) */}
+        {/* MINIJUEGO 1 (FASE 3): TRAZOS BRILLANTES (LETRA A) */}
+        {currentScreen === 'minijuego_trazos' && (
+          <MinijuegoTrazos onReturnToMap={() => navegarA('map')} />
+        )}
+
+        {/* MINIJUEGO 2 (FASE 3): BURBUJAS DE SONIDO (SÍLABA MA) */}
+        {currentScreen === 'minijuego_burbujas' && (
+          <MinijuegoBurbujas onReturnToMap={() => navegarA('map')} />
+        )}
+
+        {/* MINIJUEGO 3 (FASE 3): EL CALDERO DE LAS PALABRAS (FORMA ME-SA) */}
+        {currentScreen === 'minijuego_caldero' && (
+          <MinijuegoCaldero onReturnToMap={() => navegarA('map')} />
+        )}
+
+        {/* MINIJUEGOS ADICIONALES */}
         {currentScreen === 'level1' && (
           <Level1Vowels
             onCompleteLevel={handleLevel1Complete}
@@ -53,7 +71,6 @@ function GameRouter() {
           />
         )}
 
-        {/* MINIJUEGO 2: CONSONANTES (ALIMENTA AL MININO) */}
         {currentScreen === 'level2' && (
           <Level2FeedKitty
             onCompleteLevel={handleLevel2Complete}
@@ -65,7 +82,6 @@ function GameRouter() {
           />
         )}
 
-        {/* MINIJUEGO 3: SÍLABAS (SALTOS EN LAS NUBES) */}
         {currentScreen === 'level3' && (
           <Level3CloudJumps
             onCompleteLevel={handleLevel3Complete}
@@ -77,7 +93,6 @@ function GameRouter() {
           />
         )}
 
-        {/* MINIJUEGO 4: FIESTA GATUNA (ORDENA LAS CAJAS) */}
         {currentScreen === 'level4' && (
           <Level4PartyBoxes
             onRestartAll={() => {

@@ -88,6 +88,15 @@ export const AUDIO_MANIFEST = {
   'reward_welcome': '/audio/reward_welcome.mp3',
   'reward_thanks': '/audio/reward_thanks.mp3',
   'reward_need_more': '/audio/reward_need_more.mp3',
+
+  // Fase 3: Minijuegos de Trazos, Burbujas y Caldero
+  'trace_welcome': '/audio/trace_welcome.mp3',
+  'trace_win': '/audio/trace_win.mp3',
+  'bubbles_welcome': '/audio/bubbles_welcome.mp3',
+  'bubbles_fail': '/audio/bubbles_fail.mp3',
+  'cauldron_welcome': '/audio/cauldron_welcome.mp3',
+  'cauldron_win': '/audio/cauldron_win.mp3',
+  'win_yarn_modal': '/audio/win_yarn_modal.mp3',
 };
 
 /**
@@ -100,6 +109,15 @@ export function resolveAudioForText(text, explicitKey = null) {
 
   const n = normalizeTextForLookup(text);
   if (!n) return null;
+
+  // Fase 3: Minijuegos
+  if (n.includes('vamos a dibujar la letra a sigue la luz magica')) return '/audio/trace_welcome.mp3';
+  if (n.includes('que hermoso dibujas cristal')) return '/audio/trace_win.mp3';
+  if (n.includes('ayudanos a atrapar las burbujas que suenan como ma')) return '/audio/bubbles_welcome.mp3';
+  if (n.includes('ups esa no es intenta buscar la que suena ma')) return '/audio/bubbles_fail.mp3';
+  if (n.includes('vamos a hacer magia construye la palabra me-sa') || n.includes('palabra mesa')) return '/audio/cauldron_welcome.mp3';
+  if (n.includes('magia pura cristal eres muy inteligente')) return '/audio/cauldron_win.mp3';
+  if (n.includes('ganaste un ovillo magico para nuestras gatitas cristal')) return '/audio/win_yarn_modal.mp3';
 
   // Fase 2: Mapa Mágico y Casa de las Gatitas
   if (n.includes('toca el boton brillante para jugar con nosotras')) return '/audio/splash_welcome.mp3';
